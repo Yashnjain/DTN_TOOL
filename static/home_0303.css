@@ -1,0 +1,1015 @@
+th {
+  position: sticky;
+  top: 0;
+}
+
+.DTN {
+  display: inline-block;
+  vertical-align: auto;
+  text-align: center;
+  margin-top: 50px;
+  font-size: 40px;
+  font-family: 'Libre Baskerville', serif;
+}
+
+.Selector-Date{
+  width: 110px;
+  height: 30px;
+  padding-bottom: 5px;
+  border-radius: 5px;
+  padding-left: 5px;
+}
+
+header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 60px;
+  padding-bottom: 10px;
+  /* padding: 10px; */
+  /* margin-bottom: 20px; */
+  /* background-color: #f2f2f2; */
+  vertical-align: baseline;
+}
+
+.header-left {
+  flex: 1;
+  text-align: center;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.user-info img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+
+}
+
+.topright {
+  position: absolute;
+  top: 50px;
+  right: 16px;
+  font-size: 16px;
+}
+
+.abc1 {
+  /* display: inline-block; */
+  float: right;
+  /* border-radius: 10px; */
+}
+
+.fixed-top {
+  /* background-color: rgb(51,51,51); */
+  background-color: #030807;
+  color: white;
+  /* height: 70px; */
+  /* display: none; */
+}
+
+
+/* ----------------freeze header css---------------- */
+
+
+body {
+  background: #030807;
+}
+
+.tbl-container {
+  max-width: 100%;
+}
+
+.tbl-fixed {
+  overflow-x: scroll;
+  /* overflow-y: scroll;  */
+  /* height: fit-content; */
+  margin-top: 90px;
+  /* margin-bottom: -60px; */
+}
+/* 
+table {
+  min-width: max-content;
+  border-collapse: collapse;
+}
+
+table th {
+  position: sticky;
+  top: 0;
+  background: black;
+  text-align: center;
+  color: azure;
+  z-index: 10;
+}
+
+table td {
+  background-color: aliceblue;
+  text-align: center;
+
+}
+
+table th:nth-child(2) {
+  background-color: black;
+  color: white;
+  z-index: 15;
+} */
+
+
+/* style for custom step function */
+
+
+/* OLD BUTTON CODE DO NOT DELETE 
+.input-group {
+position: relative;
+display: inline-block;
+}
+
+#my-input {
+padding-right: 10px;
+}
+
+.input-buttons {
+position: absolute;
+top: 0;
+right: 0;
+bottom: 0;
+display: none;
+
+/* display: flex; */
+/* orientation: column; 
+} 
+
+.input-group:hover .input-buttons {
+display: inline-flex;
+align-items: center;
+}
+.plus,
+.minus {
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+width: 20px;
+height: 15px;
+font-size: 12px;
+cursor: pointer;
+opacity: 0.8;
+transition: all 0.2s ease-in-out;
+border: none;
+margin-right: 1px;
+} 
+
+.input-button {
+display: block;
+width: 15px;
+height: 9px;
+background: #f2f2f2;
+/* border: none; 
+color: #666;
+font-size: 12px;
+font-weight: bold;
+
+padding-left: 4px;
+
+cursor: pointer;
+user-select: none;
+line-height: 5px;
+border-radius: 10px;
+}
+
+.input-button{
+display: block;
+}
+.input-button:hover {
+background: #b6afaf;
+}
+
+.input-button:focus {
+outline: none;
+}
+
+.input-button:active {
+background: #d9d9d9;
+}
+.minus:before {
+content: "\2212"; /* Unicode character for minus symbol 
+
+}
+
+.plus:before {
+content: "\002B"; /* Unicode character for plus symbol 
+}
+
+*/
+
+/* /----------------------------------------New Button Code----------------- */
+
+.input-group {
+  position: relative;
+  display: inline-block;
+  /* padding-: 3px; */
+}
+
+#my-input {
+  padding-right: 10px;
+}
+
+.input-buttons {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: none;
+
+
+}
+
+.input-buttons {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 1;
+  bottom: 0;
+  /* display: flex; */
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 2px;
+  /* margin-top: 10px; */
+}
+
+.input-group:hover .input-buttons {
+  display: inline-flex;
+  align-items: center;
+}
+
+.plus:hover,
+.minus:hover {
+  opacity: 1;
+  background-color: #b6afaf;
+}
+
+
+.input-button {
+  display: block;
+}
+
+.input-button {
+  padding-bottom: 100px;
+}
+
+.input-button:hover {
+  background: #b6afaf;
+}
+
+.input-button:focus {
+  outline: none;
+}
+
+.input-button:active {
+  background: #d9d9d9;
+}
+
+.input-button {
+  font-size: 12px;
+  /* adjust as needed */
+  padding: 2px 5px;
+  /* adjust as needed */
+
+}
+
+.input-button {
+  border: none;
+
+}
+
+.minus:before {
+  /* content: "\2212"; Unicode character for minus symbol */
+  content: "\25BC"
+    /* content:"\2796" */
+}
+
+.plus:before {
+  /* content: "\002B"; Unicode character for plus symbol */
+  content: "\25B2";
+  /* content: "\002B"; */
+  /* content: "\2795"; */
+}
+
+/* .plus,
+  .minus {
+    display: none;
+  } */
+.plus:hover,
+.minus:hover {
+  display: block;
+}
+
+.input-button:click {
+  background-color: blue;
+}
+
+/* ------------------------------------------New Step Function CSS END ---------------------------- */
+
+body {
+  /* background: url(biourja_bg3.png); */
+  /* background: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQqEpU5NKkgSws6vbfJ4W7V2Q1WdZ2JTriRHuqaV6jPTr0GzMUqVzm8M2nyOa6Qbz7UU8E&usqp=CAU); */
+  background-size: cover;
+  background-repeat: no-repeat;
+  /* background-image: linear-gradient(to bottom, rgba(201, 170, 170, 0) 0%, rgb(126, 104, 104) 100%),url(https://www.biourja.com/wp-content/uploads/shutterstock_285764042.jpg); */
+  /* opacity: 0.75; */
+  line-height: 15px;
+
+}
+
+header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 50px;
+  /* padding-bottom: 10px; */
+  /* padding: 10px; */
+  /* margin-bottom: 20px; */
+  /* background-color: #f2f2f2; */
+  vertical-align: baseline;
+}
+
+.header-left {
+  flex: 1;
+  text-align: center;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.user-info img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+
+}
+
+/* .container {
+position: relative;
+} */
+
+.topright {
+  position: absolute;
+  top: 50px;
+  right: 16px;
+  font-size: 16px;
+}
+
+
+.cust-btn {
+  margin-left: 1px;
+  margin-right: 1px;
+  display: inline-block;
+  height: 32px;
+  line-height: 10px;
+}
+
+/* ---------------------------------for the logout button-------------------   */
+
+.abc1 {
+  /* display: inline-block; */
+  float: right;
+}
+
+.logout {
+  font-size: 0.8em;
+  font-family: "Oswald", sans-serif;
+  position: relative;
+  right: -5px;
+  bottom: -4px;
+  overflow: hidden;
+  letter-spacing: 3px;
+  opacity: 0;
+  transition: opacity 0.45s;
+  -webkit-transition: opacity 0.35s;
+  color: #030807;
+  padding-top: 2px;
+  /* padding-bottom: 5px; */
+
+
+}
+
+.button1 {
+  text-decoration: none;
+  float: right;
+  /* padding: 12px; */
+  padding: 5px;
+  /* margin: 15px; */
+  margin-bottom: 2px;
+  color: black;
+  /* width: 25px; */
+  width: 36px;
+  background-color: white;
+  border-radius: 5px;
+  transition: width 0.35s;
+  -webkit-transition: width 0.35s;
+  overflow: hidden;
+
+}
+
+
+a:hover {
+  width: 120px;
+  color: aliceblue;
+}
+
+a:hover .logout {
+  opacity: 0.9;
+}
+
+a {
+  text-decoration: none;
+  width: 100px;
+}
+
+
+.fixed-top {
+  /* background-color: rgb(51,51,51); */
+  background-color: #030807;
+  color: white;
+  /* height: 70px; */
+  /* display: none; */
+  transition: top 0.3s;
+}
+
+
+/* ----------------freeze header css---------------- */
+
+
+body {
+  background: #030807;
+}
+
+.tbl-container {
+  max-width: 100%;
+  /* margin-top: 100px; */
+  /* top:150px; */
+}
+
+.tbl-fixed {
+  overflow-x: scroll;
+  /* overflow-y: scroll;  */
+  /* height: calc(50%-300px); */
+  /* max-height: 10%;   */
+
+  /* 85 vh for monitor 
+    75 vh for laptop */
+
+  /* margin-top: 120px; */
+ }
+
+/*
+table {
+  min-width: max-content;
+}
+
+table th {
+  position: sticky;
+  top: 0;
+  background: black;
+  text-align: center;
+  color: azure;
+  z-index: 10;
+}
+
+table td {
+  background-color: aliceblue;
+  text-align: center;
+}
+
+table th:nth-child(2) {
+  background-color: black;
+  color: white;
+  z-index: 15;
+}
+
+table td {
+  font-size: 14px;
+}
+
+table th {
+  z-index: 1;
+}
+*/
+
+/* ---------------------------Add Glowing Effet--------------- */
+
+/* 
+h1{
+    -webkit-animation: neon2 1.5s ease-in-out infinite alternate;
+    -moz-animation: neon2 1.5s ease-in-out infinite alternate;
+    animation: neon2 1.5s ease-in-out infinite alternate;
+}
+@-webkit-keyframes neon2 {
+    from {
+      text-shadow: 0 0 10px #fff,
+                 0 0 20px  #fff,
+                 0 0 30px  #fff,
+                 0 0 40px  #228DFF,
+                 0 0 70px  #228DFF,
+                 0 0 80px  #228DFF,
+                 0 0 100px #228DFF,
+                 0 0 150px #228DFF;
+    }
+    to {
+      text-shadow: 0 0 5px #fff,
+                 0 0 10px #fff,
+                 0 0 15px #fff,
+                 0 0 20px #228DFF,
+                 0 0 35px #228DFF,
+                 0 0 40px #228DFF,
+                 0 0 50px #228DFF,
+                 0 0 75px #228DFF;
+    }
+  } */
+
+
+.diffText {
+  width: 80px;
+  text-align: left;
+  padding-left: 10px;
+}
+
+.cust-container{
+  color: azure; background-color: black;  width: 140px; text-align: center ;
+}
+
+.checkbox {
+  margin-right: 3px;
+  display: block-inline;
+  padding-right: 5px;
+}
+
+.plus,
+.minus {
+  width: 20px;
+  border: none;
+  height: 8px;
+  font-size: 4em;
+  line-height: 3px;
+  padding: 0 0 0 0;
+}
+
+.cust-inp{
+  text-align:left; padding-left: 10px; width: 80px; padding-right: 1px;
+}
+
+/* body{
+  background-color: #fff;
+} */
+
+@media (max-width: 1200px) {
+
+  .DTN{
+    margin-bottom: 30px;
+    font-size: 35px;
+  }
+ 
+
+}
+
+@media (max-width: 1100px) {
+
+  .DTN{
+    margin-bottom: 30px;
+    font-size: 30px;
+  }
+  .cust-btn{
+    width: 45x;
+    height: 40px;
+    font-size: 15px;
+    padding: 0 0 0 0;
+  }
+  .date-container{
+    /* width: 80px;
+    height: 100px; */
+    font-size: 15px;
+  }
+
+  .Selector-Date{
+  width: 30px;
+  height: fit-content;
+  }
+}
+
+
+
+@media (max-width: 1000px) {
+
+  .DTN{
+    margin-bottom: 30px;
+    font-size: 30px;
+  }
+  .cust-btn{
+    width: 40px;
+    height: 35px;
+    font-size: 12px;
+    padding: 0 0 0 0;
+  }
+  .date-container{
+    /* width: 80px;
+    height: 100px; */
+    font-size: 12px;
+  }
+
+  .Selector-Date{
+  width: 30px;
+  height: fit-content;
+  }
+
+}
+
+@media (max-width: 500px) {
+  .DTN{
+    margin-bottom: 30px;
+    font-size: 20px;
+  }
+  .cust-btn{
+    width: 35px;
+    height: 20px;
+    font-size: 10px;
+    padding: 0 0 0 0;
+  }
+  .date-container{
+    /* width: 80px;
+    height: 100px; */
+    font-size: 10px;
+  }
+
+  .Selector-Date{
+  width: 20px;
+  height: fit-content;
+  }
+
+  
+.logout {
+  font-size: 0.8em;
+  font-family: "Oswald", sans-serif;
+  position: relative;
+  right: -5px;
+  bottom: -4px;
+  overflow: hidden;
+  letter-spacing: 3px;
+  opacity: 0;
+  transition: opacity 0.45s;
+  -webkit-transition: opacity 0.35s;
+  color: #030807;
+  padding-top: 2px;
+  /* padding-bottom: 5px; */
+
+
+}
+
+.button1 {
+  text-decoration: none;
+  float: right;
+  /* padding: 12px; */
+  padding: 10px;
+  /* margin: 15px; */
+  margin-bottom: 2px;
+  color: black;
+  /* width: 25px; */
+  width: 30px;
+  height: 20px;
+  background-color: white;
+  border-radius: 5px;
+  transition: width 0.35s;
+  -webkit-transition: width 0.35s;
+  overflow: hidden;
+
+}
+
+
+a:hover {
+  width: 100px;
+  color: aliceblue;
+  font-size: 10px;
+  padding-bottom: 20px;
+  line-height: 5px;
+}
+
+.user-info img {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-right: 5px;
+
+}
+
+.topright {
+  position: absolute;
+  top: 25px;
+  right: 8px;
+  font-size: 16px;
+}
+p{
+  font-size: 10px;
+}
+
+}
+
+@media (max-width: 300px) {
+  .DTN{
+    margin-bottom: 30px;
+    font-size: 20px;
+  }
+  .cust-btn{
+    width: 35px;
+    height: 20px;
+    font-size: 10px;
+    padding: 0 0 0 0;
+  }
+  .date-container{
+    /* width: 80px;
+    height: 100px; */
+    font-size: 10px;
+  }
+
+  .Selector-Date{
+  width: 20px;
+  height: fit-content;
+  }
+
+  
+.logout {
+  font-size: 0.8em;
+  font-family: "Oswald", sans-serif;
+  position: relative;
+  right: -5px;
+  bottom: -4px;
+  overflow: hidden;
+  letter-spacing: 3px;
+  opacity: 0;
+  transition: opacity 0.45s;
+  -webkit-transition: opacity 0.35s;
+  color: #030807;
+  padding-top: 2px;
+  /* padding-bottom: 5px; */
+
+
+}
+
+.button1 {
+  text-decoration: none;
+  float: right;
+  /* padding: 12px; */
+  padding: 10px;
+  /* margin: 15px; */
+  margin-bottom: 2px;
+  color: black;
+  /* width: 25px; */
+  width: 30px;
+  height: 20px;
+  background-color: white;
+  border-radius: 5px;
+  transition: width 0.35s;
+  -webkit-transition: width 0.35s;
+  overflow: hidden;
+
+}
+
+
+a:hover {
+  width: 100px;
+  color: aliceblue;
+  font-size: 10px;
+  padding-bottom: 20px;
+  line-height: 5px;
+}
+
+.user-info img {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-right: 5px;
+
+}
+
+.topright {
+  position: absolute;
+  top: 25px;
+  right: 8px;
+  font-size: 16px;
+}
+p{
+  font-size: 10px;
+}
+}
+@media screen and (max-height:2000px) {
+  .tbl-fixed {
+    height: 90vh;
+  }
+}
+@media screen and (max-height:950px) {
+  .tbl-fixed {
+    height: 87vh;
+  }
+}
+
+@media screen and (max-height:700px) {
+  .tbl-fixed {
+    height: 85vh;
+  }
+}
+@media screen and (max-height:600px) {
+  .tbl-fixed {
+    height: 80vh;
+  }
+}
+@media screen and (max-height:550px) {
+  .tbl-fixed {
+    height: 75vh;
+  }
+}
+
+.selected{
+  /* background-color: green;
+   */
+   background-color:rgb(164, 245, 82);
+   color: black;
+   border: 2px solid black;
+   font-weight: 600;
+}
+
+
+.selected-2{
+  /* background-color: green;
+   */
+   /* color: black; */
+   border: 1px solid orange;
+   font-weight: 600;
+}
+
+/* ---------------------------for Table------------------------------ */
+
+/* for space between columns */
+table th,
+table td {
+  white-space: nowrap;
+  padding: 5px 20px;
+  /* padding: 10px 20px; */
+  font-family: Arial;
+}
+
+table tr th:first-child,
+table td:first-child {
+  position: sticky;
+  /* width: 155px; */
+  min-width: 171px;
+  left: 0;
+  z-index: 1001;
+  background: #fff;
+}
+
+table tr th:nth-child(2),
+table td:nth-child(2) {
+  position: sticky;
+  min-width: 100px;
+  /* max-width: 200px; */
+  /* left: 154px; */
+  left: 170px;
+  z-index: 1001;
+  background: #fff;
+}
+
+table tr th:nth-child(3),
+table td:nth-child(3) {
+  position: sticky;
+  min-width: 100px;
+  /* left: 251px; */
+  left: 283px;
+  z-index: 1001;
+  background: #fff;
+}
+
+
+table tr th:nth-child(4),
+table td:nth-child(4) {
+  position: sticky;
+  min-width: 100px;
+  /* left: 360px;
+ */
+  left: 397px;
+  z-index: 1001;
+  background: #fff;
+}
+
+table tr th:nth-child(5),
+table td:nth-child(5) {
+  position: sticky;
+  min-width: 100px;
+  left: 516px;
+  z-index: 1001;
+  background: #fff;
+}
+
+
+table tr th:first-child,
+table tr th:nth-child(2),
+table tr th:nth-child(3),
+table tr th:nth-child(4),
+table tr th:nth-child(5) {
+  z-index: 1101;
+}
+table tr tr:nth-child(even)
+{
+  background-color: #b6afaf;
+}
+
+
+tr:not(th):hover {
+  border-top: 0.5px solid rgb(160, 158, 158);
+  border-bottom: 0.5px solid rgb(160, 158, 158);
+}
+
+
+tr{
+  box-sizing: border-box;
+}
+h1{
+  cursor: default;
+}
+.abc1 :hover{
+  cursor: pointer;
+}
+
+table th{
+  z-index:1;
+}
+body{
+  box-sizing: border-box;
+}
+/* table td {
+  background-color: aliceblue;
+  text-align: center;
+} */
+
+/* Alternate row colors */
+table tr:nth-child(even) {
+  /* background-color: #e3e0e0; */
+  /* background-color: rgb(190, 221, 249);  */
+  background-color: rgb(234, 241, 246); 
+}
+
+table tr:nth-child(odd) {
+  background-color: #fff;
+}
+
+table tr td:nth-child(-n+5) {
+  /* background-color: #e3e0e0; set background color for even rows */
+  /*background-color: rgb(190, 221, 249);   /*set background color for even rows
+ */ background-color: rgb(234, 241, 246);
+}
+
+table tr:nth-child(odd) td:nth-child(-n+5) {
+  background-color: #fff; /* set background color for odd rows */
+}
+
+.cust-btn{
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+
+.cropped {
+  width: 150px; 
+  height: 150px; 
+  overflow: hidden;
+  }
+  tr:hover {
+    border-top: 0.5px solid rgb(160, 158, 158);
+    border-bottom: 0.5px solid rgb(160, 158, 158);
+  }
+
+  thead :hover{
+    border-top: 0.00001px solid black !important;
+    border-bottom: 0.000001px solid black !important;
+  }
+  /* .cropped img {
+  margin: -150px 0px 0px -150px;
+  } */

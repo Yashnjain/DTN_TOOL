@@ -1,0 +1,54 @@
+{% extends "account/base.html" %}
+{% load static %}
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+
+{% block content %}
+
+<!-- <h1>{% trans "Sign In" %}</h1> -->
+
+<!-- {% get_providers as socialaccount_providers %}
+
+{% if socialaccount_providers %}
+<p>{% blocktrans with site.name as site_name %}Please sign in with one
+of your existing third party accounts. Or, <a href="{{ signup_url }}">sign up</a>
+for a {{ site_name }} account and sign in below:{% endblocktrans %}</p> -->
+
+<div class="socialaccount_ballot login">
+  <div style="display: flex; justify-content: space-between; margin-top: 10px ;">
+    <img src="{% static 'biourja_logo2.png' %}" alt="BioUrja Logo" height="40px" width="80px" >
+    <img src="https://cdn-icons-png.flaticon.com/512/732/732221.png" style=" margin-left: 12em; margin-right: 12em;" alt="" srcset="" height="25px">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/DTN_logo_2019.svg/800px-DTN_logo_2019.svg.png" alt="DTN Logo" height="30px">
+  </div>
+  <h1 style="margin-bottom: 5px;">Sign Up</h1>
+  <div class="socialaccount_providers container2">
+    <p style="margin-bottom: 30px;">You are about to Sign Up using Microsoft Azure AD</p>
+    <button>
+      {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+    </button>
+  </div>
+
+  <!-- <div class="login-or">{% trans 'or' %}</div> -->
+
+</div>
+
+{% include "socialaccount/snippets/login_extra.html" %}
+
+{% else %}
+<p>{% blocktrans %}If you have not created an account yet, then please
+<a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>
+{% endif %}
+
+<!-- <form class="login" method="POST" action="{% url 'account_login' %}">
+  {% csrf_token %}
+  {{ form.as_p }}
+  {% if redirect_field_value %}
+  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+  {% endif %}
+  <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+  <button class="primaryAction" type="submit">{% trans "Sign In" %}</button>
+</form> -->
+
+{% endblock %}

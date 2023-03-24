@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="/static/login1.css"> -->
+    <title>{% block head_title %}{% endblock %}</title>
+    {% block extra_head %}
+    {% endblock %}
+    <style>
+      body{
+           /* background: url('https://wallpapercave.com/wp/wp2939993.jpg');  */
+           /* background: url('https://www.biourja.com/wp-content/uploads/shutterstock_285764042.jpg');  */
+           /* background: url('http://energy.agwired.com/wp-content/uploads/2021/10/bio-urja.jpg');  */
+           height: 99vh;
+           /* background: url('https://www.biourja.com/wp-content/uploads/shutterstock_285764042.jpg');  */
+           background-repeat: no-repeat; 
+            background-size: cover; 
+          background-position: center center/cover; 
+           /* border: 1px solid black; */
+           box-sizing: border-box;
+           overflow: hidden;
+           background-color: lightgray;
+           /* background-image: linear-gradient(to right, #0f0c29, #302b63, #24243e); */
+           /* background: linear-gradient(to bottom, #000000, #222222);  */
+           /* background-image: radial-gradient(circle farthest-side, rgb(15, 10, 29), rgb(8, 8, 8)); */
+           /* background: linear-gradient(to bottom, transparent 0%, rgb(32, 28, 28) 100%); */
+           /* background-color: black; */
+      }
+      
+      .login-container{
+        display: flex;
+        justify-content: center;
+      }
+      .login{
+          display:flex;
+          flex-direction: column;
+          height: 300px;
+          width: 600px;
+          align-items: center;
+          margin: auto;
+          margin-top: 140px;
+          background-color: #fff;   
+          transition: box-shadow 0.230s ease-out;
+          box-shadow: 0 0 40px #615f5f;
+          border-radius: 10px;
+          position: center center;
+          color: #090909;
+
+      }
+    
+      .login h1{
+          /* color: white; */
+          color: black;
+          font-size: 2rem;
+          border-bottom: 4px solid rgba(255,255,255,0.5);
+          /* margin: 50px; */
+      }
+      /* .login p{
+          color: #fff;
+      } */
+      #submit1{
+        margin-top: 20px;
+         width: 200px;
+        /* background: transparent; border: 2px solid white; color: #fff; */
+        /* width: calc(100% - 80px); */
+        height: 25px;
+        font-family: 'Libre Baskerville', serif;
+        font-size: 16px;
+        box-shadow: 0 0 40px #fff;
+        /* border-radius: 10px; */
+      }
+      #submit1:hover{
+          cursor: pointer;
+          font-weight: 550;
+          
+          /* background-color: rgba(255 ,255,255, 0.1); */
+          /* transform: scaleX(1.1);
+          transform: scale(1.1,1.1);
+          transition-delay: width height 1sec; */
+      }
+      a{
+        color: #fff;
+        font-size: 20px;
+      }
+      .message-container li{
+        color: #090909;
+      }
+      .container{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .socialaccount_provider{
+        color: #090909;
+      }
+      .socialaccount_provider{
+        text-decoration: none;
+        list-style: none;
+      }
+      .container2 {
+         display: flex;
+         flex-direction: column;
+         justify-content: center;
+         \align-items: center;
+         margin-left: 10px;
+          margin-right: 10px;
+
+          text-align: justify;
+        }
+
+          .container2 button {
+             display: flex;
+             align-items: center;
+             justify-content: center;
+              /* margin-top:10px; */
+              /* margin-right:0; */
+            }
+            .container h1, p, button{
+              display: block;
+          margin-block-start: 12px;
+          margin-block-end: 12px;
+          margin-inline-start: 12px;
+          margin-inline-end: 12px;
+            }
+      
+  </style>
+  </head>
+  <body>
+    {% block body %}
+
+     {% comment %} {% if messages %}
+    <div class="message-container">
+      <!-- <strong>Messages:</strong> -->
+      <ul>
+        {% for message in messages %}
+        <li>{{message}}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %} {% endcomment %}
+
+   <!-- <div>
+      <strong>Menu:</strong>
+      <ul>
+        {% if user.is_authenticated %}
+        <li><a href="{% url 'account_email' %}">Change E-mail</a></li>
+        <li><a href="{% url 'account_logout' %}">Sign Out</a></li>
+        {% else %}
+        <li><a href="{% url 'account_login' %}">Sign In</a></li>
+        <li><a href="{% url 'account_signup' %}">Sign Up</a></li>
+        {% endif %}
+      </ul>
+    </div>  -->
+    {% block content %}
+    {% endblock %}
+    {% endblock %}
+    {% block extra_body %}
+    {% endblock %}
+  </body>
+</html>

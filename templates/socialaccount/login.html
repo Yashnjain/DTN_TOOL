@@ -1,0 +1,47 @@
+{% extends "socialaccount/base.html" %}
+{% load i18n %}
+{% load static %}
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+
+{% block content %}
+<!-- {% if process == "connect" %}
+
+    <h1>{% blocktrans with provider.name as provider %}Connect {{ provider }}{% endblocktrans %}</h1>
+
+    <p>{% blocktrans with provider.name as provider %}You are about to connect a new third party account from {{ provider }}.{% endblocktrans %}</p>
+    {% else %}
+    <h1>{% blocktrans with provider.name as provider %}Sign In Via {{ provider }}{% endblocktrans %}</h1>
+
+    <p>{% blocktrans with provider.name as provider %}You are about to sign in using a third party account from {{ provider }}.{% endblocktrans %}</p>
+    {% endif %} -->
+
+    <!-- <img src="https://www.biourja.com/wp-content/uploads/BioUrja_Companies_Logos_Retina_Artboard-9.png" alt="LOGO"
+      style="text-align: center; width: 100px; height: 60px; background-color: #fff;"> -->
+<form class="login" method="post">
+  {% csrf_token %}
+  
+      <div style="display: flex; justify-content: space-between; margin-top: 10px ;">
+        <!-- <img src="https://image4.owler.com/logo/biourja_owler_20201203_050017_large.png" alt="BioUrja Logo" height="50px" width="80px" > -->
+        <img src="{% static 'biourja_logo2.png' %}" alt="BioUrja Logo" height="40px" width="80px" >
+        <img src="https://cdn-icons-png.flaticon.com/512/732/732221.png" style=" margin-left: 12em; margin-right: 12em;" alt="" srcset="" height="25px"
+      >
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/DTN_logo_2019.svg/800px-DTN_logo_2019.svg.png" alt="DTN Logo" height="30px">
+      </div>
+
+  <h1 style="margin-bottom: 0; margin-top: 40px;">Approve Sign In</h1>
+  <p style="font-family: 'Libre Baskerville', serif; color: black;" >You are About to Sign In Via Microsoft Graph.</p>
+  <!-- <p style="font-family: 'Libre Baskerville', serif; color: black;">You are about to sign in using a third party account from Microsoft Graph.</p> -->
+  <!-- <p>You are about to connect a new third party account from</p> -->
+  <button type="submit" id="submit1">{% trans "Continue" %}</button>
+
+</form>
+
+
+
+
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,57 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+ <style>
+ table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+} 
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+ tr:nth-child(even) {
+  background-color: #dddddd;
+} 
+</style>
+</head>
+<body>
+
+<h2>DTN Tool</h2>
+<form action='' method="post">
+  {% csrf_token %}
+<table>
+   
+  <tr>
+    <!-- <th>Location id</th> -->
+    <th>Location</th>
+    <th>final price</th>
+    <th>Prev price</th>
+    <th>Yesterday Date</th>
+    <th>diff.</th>
+  </tr>
+  {% for l in l_y_p %}
+  
+  <tr>
+    <!-- <td>{{l.location}}</td> -->
+    <td>{{l.location__location}}</td>
+    <td>{{l.new_price}}</td>
+    <td>{{l.price}}</td>
+    <td>{{l.date}}</td>
+    <td><input type="text" id={{l.location}} name={{l.location}} value={{l.price_dffernce}}><br></td>
+  </tr>
+  {% endfor %}
+  <tr>
+  <td><input type="submit" value="Submit"></td>
+  </tr>
+ 
+</table>
+</form> 
+</body>
+</html>
+
