@@ -197,5 +197,6 @@ def get_today_cust_price_dict(cust_all,date):
     filter_dict = {}
     for cust in cust_all:
         if cust['date'] == date:
-            filter_dict[cust["cust_term_prod_id"]] = cust["price_variance"]
+            # filter_dict[cust["cust_term_prod_id"]] = cust["price_variance"]
+            filter_dict[cust["cust_term_prod_id"]] = cust
     return filter_dict       

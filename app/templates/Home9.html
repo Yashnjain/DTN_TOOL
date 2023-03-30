@@ -198,7 +198,7 @@
 
 
 
-                                <!------------------Diff column val ------------------------->
+                                
                                 <td>
 
                                     {% if active %}
@@ -253,8 +253,9 @@
                                                     onclick="decreaseValue({{c.ctpm}})"></button>
                                             </div>
                                         </div>
+                                        {% if special_discount_active %}
                                         <div class="dropdown" style="margin-left: 2px;" id={{"DRP_B"|add:c.ctpm}}
-                                            title="Enter Base Price">
+                                            title="Update Base Price">
 
                                             <!-- <button class=" dropdown-toggle drp-btn " type="button"
                                                 id={{"DRP_btn"|add:c.ctpm}} data-toggle="dropdown" aria-haspopup="true"
@@ -265,14 +266,16 @@
                                                 data-toggle="dropdown" aria-haspopup="true" id={{"DRP_btn"|add:c.ctpm}}
                                                 aria-expanded="false " data_for_id={{c.ctpm}} data_c={{l.new_price}}
                                                 data_p={{l.yesterday_price|add_floats:l.price_diff}}
-                                                data-curr={{"curr"|add:l.location_id}} onclick="generateDRP(this)">
+                                                data-curr={{"curr"|add:l.location_id}} onclick="generateDRP(this)" data_for_form="1" data_drp = {{ c.base_price }} data_in_curr="">
                                             </button>
                                             <div class="dropdown-menu" aria-labelledby={{"DRP_btn"|add:c.ctpm}}
                                                 id={{"DRP_M"|add:c.ctpm}} style="height: 100px; width: 200px;">
                                             </div>
                                         </div>
+                                        {% else %}
+                                        {% endif %}
                                     </div>
-
+                                   
 
                                     {% else %}
                                     <div class="cust-p-container"
@@ -296,9 +299,9 @@
                                                     onclick="decreaseValue({{c.ctpm}})"></button>
                                             </div>
                                         </div>
-                                        
+                                        {% if special_discount_active %}
                                         <div class="dropdown" style="margin-left: 2px;" id={{"DRP_B"|add:c.ctpm}}
-                                            title="Enter Final Price">
+                                            title="Update Base Price">
 
                                             <!-- <button class=" dropdown-toggle drp-btn " type="button"
                                                 id={{"DRP_btn"|add:c.ctpm}} data-toggle="dropdown" aria-haspopup="true"
@@ -309,14 +312,16 @@
                                                 data-toggle="dropdown" aria-haspopup="true" id={{"DRP_btn"|add:c.ctpm}}
                                                 aria-expanded="false " data_for_id={{c.ctpm}} data_c={{l.new_price}}
                                                 data_p={{l.yesterday_price|add_floats:l.price_diff}}
-                                                data-curr={{"curr"|add:l.location_id}} onclick="generateDRP(this)">
+                                                data-curr={{"curr"|add:l.location_id}} onclick="generateDRP(this)" data_for_form="1" data_drp = {{ c.base_price }} data_in_curr=""  disabled>
                                             </button>
                                             <div class="dropdown-menu" aria-labelledby={{"DRP_btn"|add:c.ctpm}}
                                                 id={{"DRP_M"|add:c.ctpm}} style="height: 100px; width: 200px;">
                                             </div>
                                         </div>
-
+                                        {%else%}
+                                        {% endif %}
                                     </div>
+
                                     {% endif %}
                                 </div>
 
@@ -331,7 +336,7 @@
             </form>
         </div>
     </div>
-    <script src="{% static 'script.js' %}"></script>
+    <script src="{% static 'script (3).js' %}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"

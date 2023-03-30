@@ -275,10 +275,17 @@ function generateDRP(event) {
     var btn_id = "DRP_cl" + ctpm;
 
     var divM = document.getElementById(DRP_Mid);
+    var make_form = DRPbtn.getAttribute("data_for_form");
 
-    const dropdownMenuHtml = generateDropdownMenuHtml(event);
-    console.log(dropdownMenuHtml);
-    divM.innerHTML = dropdownMenuHtml;
+    if(make_form == "1")
+    {
+        const dropdownMenuHtml = generateDropdownMenuHtml(event);
+        console.log(dropdownMenuHtml);
+        divM.innerHTML = dropdownMenuHtml;
+
+    }
+
+   
 
 }
 
@@ -289,12 +296,17 @@ function generateDropdownMenuHtml(event) {
     var curr = document.getElementById(curr_id);
 
     var ctpm = DRPbtn.getAttribute("data_for_id");
+    var drp = DRPbtn.getAttribute("data_drp");
     // var new_price = DRPbtn.getAttribute("data_c");
     // var yesterday_price = DRPbtn.getAttribute("data_p");
 
-    var valText = curr.innerText
+    // var valText = curr.innerText
+    var valText = drp;
 
-
+    var make_form = DRPbtn.getAttribute("data_for_form");
+    if(make_form == "1")
+    {
+    // console.log("generating form");
     var DRP_Mid = "DRP" + ctpm;
     var drp_id = "DRP_INP" + ctpm;
     var btn_id = "DRP_cl" + ctpm;
@@ -309,7 +321,7 @@ function generateDropdownMenuHtml(event) {
     label.classList.add('form-label');
     label.setAttribute('for', 'fm1');
     label.style.marginLeft = "2px";
-    label.textContent = 'Enter Final Price:';
+    label.textContent = 'Update Base Price';
     divFormGroup.appendChild(label);
 
     const divInput = document.createElement('div');
@@ -318,7 +330,7 @@ function generateDropdownMenuHtml(event) {
     input.classList.add('form-control');
     input.setAttribute('id', `DRP_INP${ctpm}`);
     input.setAttribute('type', 'text');
-    input.setAttribute('placeholder', 'Enter Final Price.');
+    input.setAttribute('placeholder', 'Update Base Price');
     input.setAttribute('value', valText);
     input.setAttribute('data_val', valText);
     input.setAttribute('required', 'true');
@@ -329,31 +341,30 @@ function generateDropdownMenuHtml(event) {
     input.setAttribute('oninput', 'checkDecimal(this);');
     divInput.appendChild(input);
 
-
-
     divFormGroup.appendChild(divInput);
-
+    
     const inputButton = document.createElement('input');
     inputButton.setAttribute('type', 'button');
     inputButton.classList.add('btn', 'btn-primary', 'cust-btn');
     inputButton.setAttribute('id', `DRP_cl${ctpm}`);
-    inputButton.setAttribute('value', 'Close');
+    inputButton.setAttribute('value', 'Save');
     inputButton.style.marginTop = "0.4em";
     inputButton.style.height = "25px";
     inputButton.style.fontSize = "15px";
     inputButton.style.marginLeft = "0px";
     inputButton.setAttribute('onclick', 'closeDRP(this);');
+
+    DRPbtn.setAttribute('data_for_form', "0");
     // inputButton.addEventListener('click', function () {
     //     closeDRP(this);
     // });
-    inputButton.onclick = function () {
-        closeDRP(this);
-    };
+
 
     divFormGroup.appendChild(inputButton);
     form.appendChild(divFormGroup);
     // div.appendChild(form);
     return form.outerHTML;
+}
 }
 
 

@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from .viewspeedupdated import home,fetch_dtn_file_data,load_data_to_dtn,download_file,filter_files
+from .views import home,fetch_dtn_file_data,load_data_to_dtn,download_file,filter_files
 from .views_csvresponse import getfiledetail
 from .views_delete import reset_today_price
 

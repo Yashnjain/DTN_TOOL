@@ -73,6 +73,7 @@ class Cust_price(models.Model):
     cust_term_prod = models.ForeignKey(Terminal_customer_mapping,on_delete=models.CASCADE)
     date = models.DateField(default=date.today,db_index=True)    
     price_variance = models.FloatField()
+    base_price = models.FloatField()
     Final_price = models.FloatField()
     status = models.IntegerField(default=0)
     

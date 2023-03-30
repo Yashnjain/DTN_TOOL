@@ -483,7 +483,7 @@ window.addEventListener("load", () => {
                                                     onclick="decreaseValue({{c.ctpm}})"></button>
                                             </div>
                                         </div>
-                                        <div class="dropdown" style="margin-left: 2px;" id={{"DRP_B"|add:c.ctpm}} title="Enter Final Price">
+                                        <div class="dropdown" style="margin-left: 2px;" id={{"DRP_B"|add:c.ctpm}} title="Enter Base Price">
                                             <!-- <button class=" drp-btn " type="button" id={{"DRP_btn"|add:c.ctpm}} data-toggle="dropdown"
                                                 aria-haspopup="true" aria-expanded="false" style="border: 0.1px solid lightslategray; font-size: 11px; padding-right: 5px; font-weight: 700;padding-top: 2px;" >
                                                 	
@@ -503,10 +503,10 @@ window.addEventListener("load", () => {
                                                         <div style="display: flex; flex-direction: row;">
 
                                                             {% if  l.new_price %}
-                                                            <input class="form-control" id={{"DRP_INP"|add:c.ctpm}} placeholder="Enter Final Price." value={{l.new_price}} data_val={{l.new_price}} required style="margin-right: 2px;height: 30px;" onblur="setCustV(this)" oninput="checkDecimal(this)">
+                                                            <input  id={{"DRP_INP"|add:c.ctpm}} placeholder="Enter Final Price." value={{l.new_price}} data_val={{l.new_price}} name={{"SP"|add:c.ctpm}} required style="margin-right: 2px;height: 30px;" onblur="setCustV(this)" oninput="checkDecimal(this)">
                                         
                                                             {% else %} 
-                                                            <input class="form-control" id={{"DRP_INP"|add:c.ctpm}} placeholder="Enter Final Price." value={{l.yesterday_price|add_floats:l.price_diff}}  data_val={{l.yesterday_price|add_floats:l.price_diff}} required style="margin-right: 2px;height: 30px; "  onblur="setCustV(this)" oninput="checkDecimal(this)">
+                                                            <input  id={{"DRP_INP"|add:c.ctpm}} placeholder="Enter Final Price." value={{l.yesterday_price|add_floats:l.price_diff}}  data_val={{l.yesterday_price|add_floats:l.price_diff}} name={{"SP"|add:c.ctpm}} required style="margin-right: 2px;height: 30px; "  onblur="setCustV(this)" oninput="checkDecimal(this)">
                                     
                                                             {% endif %}
 
@@ -561,10 +561,10 @@ window.addEventListener("load", () => {
                                                     </label>
                                                     <div style="display: flex; flex-direction: row;">
                                                         {% if  l.new_price %}
-                                                        <input class="form-control" id={{"DRP_INP"|add:c.ctpm}} placeholder="Enter Final Price." value={{l.new_price}} data_val={{l.new_price}} required style="margin-right: 2px;height: 30px;" onblur="setCustV(this)" oninput="checkDecimal(this)">
+                                                        <input class="form-control" id={{"DRP_INP"|add:c.ctpm}} placeholder="Enter Final Price." name={{"SP"|add:c.ctpm}}  value={{l.new_price}} data_val={{l.new_price}}   name={{"SP"|add:c.ctpm}}  required style="margin-right: 2px;height: 30px;" onblur="setCustV(this)" oninput="checkDecimal(this)">
                                     
                                                         {% else %} 
-                                                        <input class="form-control" id={{"DRP_INP"|add:c.ctpm}} placeholder="Enter Final Price." value={{l.yesterday_price|add_floats:l.price_diff}}  data_val={{l.yesterday_price|add_floats:l.price_diff}} required style="margin-right: 2px;height: 30px;"  onblur="setCustV(this)" oninput="checkDecimal(this)">
+                                                        <input class="form-control" id={{"DRP_INP"|add:c.ctpm}} placeholder="Enter Final Price." name={{"SP"|add:c.ctpm}} value={{l.yesterday_price|add_floats:l.price_diff}}  data_val={{l.yesterday_price|add_floats:l.price_diff}} name={{"SP"|add:c.ctpm}}  required style="margin-right: 2px;height: 30px;"  onblur="setCustV(this)" oninput="checkDecimal(this)">
                                 
                                                         {% endif %}
                                                         <!-- <input class="form-control" id="fm2" placeholder="Enter your Differece." required> -->

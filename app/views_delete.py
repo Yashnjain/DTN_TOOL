@@ -24,7 +24,7 @@ def reset_today_price(request):
     else:
         return HttpResponse ("Successfully deleted today prices")
     finally:
-        print("kjhflaknc")
+        print("check")
     
 
 

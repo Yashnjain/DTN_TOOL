@@ -167,7 +167,9 @@ def home(request,id = 0):
         
             #Check for T date data 
             submit_active = False
+            special_discount_active = False
             if locations_price_today: 
+                special_discount_active = True
                 #print("Todays data is already there")
                 submit_active = True
                 if id == 0:
@@ -199,6 +201,7 @@ def home(request,id = 0):
             print(time.time(),"e")
             location_and_customer = []
             cust_price_today_all_dict = get_today_cust_price_dict(cust_price_all,today)
+            cust_price_yesterday_all_dict = get_today_cust_price_dict(cust_price_all,yesterday)
             for location_price_yesterday in locations_price_yesterday:
                 # looping through all the location
                 # print("working")
@@ -232,29 +235,39 @@ def home(request,id = 0):
                         customer_result["customer_name"] = tcp["customer__customer"]
                         customer_result["status"] = tcp["status"]   
                         ctpm = tcp["id"]
-                        customer_result["ctpm"] = str(ctpm)         
+                        customer_result["ctpm"] = str(ctpm)     
+                        
                         try:
                             customer_prices_yesterday = 0
+                           
                             if locations_price_today: 
                                 # if cust_exits_on_date(cust_price_all,today,ctpm):   
                                 # if cust_price_all.filter(date = today,cust_term_prod_id = ctpm):
                                     # customer_prices_yesterday = cust_price_all.filter(date = today,cust_term_prod_id = ctpm).values("price_variance")[0]
                                 # customer_prices_yesterday = get_cust_price_by_date(cust_price_today_all,ctpm)
-                                customer_prices_yesterday = cust_price_today_all_dict.get(ctpm,0)
+                                customer_prices_yesterday_dict = cust_price_today_all_dict.get(ctpm,0)
+                                if customer_prices_yesterday_dict:
+                                    customer_prices_yesterday = customer_prices_yesterday_dict["price_variance"]
+                                    customer_result["base_price"] = customer_prices_yesterday_dict["base_price"]
+                                    # base_price = customer_prices_yesterday["base_prices"]
+                                else:
+                                   customer_prices_yesterday = 0.0
+                                   customer_result["base_price"] = location_result["new_price"]
+                                    
                                 # else:
                                 #     # customer_prices_yesterday = cust_price_all.filter(date = yesterday,cust_term_prod_id = ctpm).values("price_variance")[0]  
                                 #     # customer_prices_yesterday = get_cust_price_by_date(cust_price_all,yesterday,ctpm)  
                                 #     customer_prices_yesterday = 0
                             else:
-                                customer_prices_yesterday = 0
-                                #print("check")
-                                # if cust_exits_on_date(cust_price_all,yesterday,ctpm):
-                                #     customer_prices_yesterday = get_cust_price_by_date(cust_price_all,yesterday,ctpm)   
+                                customer_prices_yesterday = cust_price_yesterday_all_dict.get(ctpm,0)
+                                if customer_prices_yesterday:
+                                    customer_prices_yesterday = customer_prices_yesterday["price_variance"]
                                 
                         except:
                             customer_prices_yesterday = 0 
                         # try:
                         customer_result["price_variance"] = customer_prices_yesterday
+                       
                         # except:
                         #     customer_result["price_variance"] = 0 
                         customer_detail.append(customer_result)
@@ -274,14 +287,15 @@ def home(request,id = 0):
                "dtnloadsubmit" : maxstatus,
                "yesterday" : yesterday_str,
                "today" : today_str,
-               "last_upload_timestamp" : last_upload_timestamp
+               "last_upload_timestamp" : last_upload_timestamp,
+               "special_discount_active" : special_discount_active
             }
             end_time = time.time()
             print(time.time(),"f")
             total_time = end_time - start_time
             print(f"Total time taken: {total_time} seconds")
             
-            return render (request,"Home8.html",context)
+            return render (request,"Home9.html",context)
         
         ###########################################Post################################################
         
@@ -306,6 +320,7 @@ def home(request,id = 0):
             price_variance = {}
             cptm = {}
             SP = {}
+            
             # Post Data filteration
             for key,value in data.items():
                 try:
@@ -358,9 +373,11 @@ def home(request,id = 0):
                 # l_price = location_price_all.filter(location_id = key,date = today).first()
                 
                 l_price = get_location_dict(location_price_all,today,key)
+                price_differnece_flag =  False
                 if l_price:
                     location_price = round(float(location_yesterday_price) + float(value),4)
                     if l_price["price_dffernce"] != round(float(value),4):
+                        price_differnece_flag = True
                         l_price["price_dffernce"] = round(float(value),4)
                         l_price["price"] = round(float(location_yesterday_price) + float(value),4)
                         if l_price["price"] < 0:
@@ -414,23 +431,42 @@ def home(request,id = 0):
                             change = False
                             if customer_price['price_variance'] != round(discount,4):
                                 customer_price['price_variance'] = round(discount,4)
+                                customer_price['Final_price'] = round((customer_price['base_price'] + customer_price['price_variance'] ),4)
                                 if maxstatus:
                                     customer_price['status'] = int(maxstatus) + 1
                                 change  = True
-                               
-                            if customer_price['Final_price'] != round((float(location_price) + discount),4):
-                                customer_price['Final_price'] = round((float(location_price) + discount),4)
+                            if str(tcp['id']) in list(SP.keys()):
+                                customer_price['base_price'] = float(SP[str(tcp['id'])])
+                                customer_price['Final_price'] = round((customer_price['base_price'] + discount),4)
+                                if maxstatus:
+                                    customer_price['status'] = int(maxstatus) + 1
+                                else:
+                                    customer_price['status'] = 0
+                                change = True    
+                            if price_differnece_flag:
+                                customer_price['base_price'] = location_price
+                            if customer_price['Final_price'] != round((customer_price['base_price'] + discount),4):
+                                customer_price['Final_price'] = round((customer_price['base_price'] + discount),4)
                                 if maxstatus:
                                     customer_price['status'] = int(maxstatus) + 1
                                 else:
                                     customer_price['status'] = 0
                                 change = True
+                            # if str(tcp['id']) in list(SP.keys()):
+                            #     customer_price['base_price'] = float(SP[str(tcp['id'])])
+                            #     customer_price['Final_price'] = round((customer_price['base_price'] + discount),4)
+                            #     if maxstatus:
+                            #         customer_price['status'] = int(maxstatus) + 1
+                            #     else:
+                            #         customer_price['status'] = 0
+                            #     change = True
+                                
                             if change:
                             # customer_price.save()
-                                customer_price = Cust_price(id = customer_price["id"], cust_term_prod_id = tcp['id'],date =today,price_variance = customer_price['price_variance'],Final_price = customer_price['Final_price'],status = customer_price['status'])
+                                customer_price = Cust_price(id = customer_price["id"], cust_term_prod_id = tcp['id'],date =today,price_variance = customer_price['price_variance'],Final_price = customer_price['Final_price'],status = customer_price['status'],base_price = customer_price['base_price'])
                                 list_cust_update.append(customer_price)
                         else: 
-                            c_p = Cust_price(date= today,price_variance = round(discount,4),Final_price = round((float(location_price) + discount),4),cust_term_prod_id = tcp["id"])
+                            c_p = Cust_price(date= today,price_variance = round(discount,4),Final_price = round((float(location_price) + discount),4),cust_term_prod_id = tcp["id"],base_price = float(location_price))
                             if maxstatus:
                                 c_p.status = maxstatus + 1
                             # c_p.save()
@@ -446,7 +482,7 @@ def home(request,id = 0):
                     Terminal_customer_mapping.objects.bulk_update(list_tcm_update,["status"])
             def list_cust_update_func():  
                 if  list_cust_update:
-                    Cust_price.objects.bulk_update(list_cust_update,['price_variance','status','Final_price']) 
+                    Cust_price.objects.bulk_update(list_cust_update,['price_variance','status','Final_price','base_price']) 
             def list_location_update_func():      
                 if list_location_update:
                     Location_price.objects.bulk_update(list_location_update,['price_dffernce','price','status'])   
@@ -646,7 +682,8 @@ def fetch_dtn_file_data(id,for_date):
                                             loc["state"] = lp["location_id__state"]
                                             loc["location"] = lp["location__location"]
                                             loc["price"] = cp["Final_price"]
-                                            loc["change"] = lp["price_dffernce"] + cp["price_variance"]
+                                            # loc["change"] = lp["price_dffernce"] + cp["price_variance"]
+                                            loc["change"] = cp["price_variance"]
                                             # loc["effective_date"] = date.today()
                                             # loc["effective_time"] = "18:00"
                                            
