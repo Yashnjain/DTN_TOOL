@@ -10,7 +10,6 @@ def reset_today_price(request):
         query_costomer_delete = """delete  from public.app_cust_price where date = '{}' """.format(date.today())
         query_location_delete = """delete  from public.app_location_price where date = '{}' """.format(date.today())
         query_dtn_load_delete = """ delete  from public.app_dtn_load where date = '{}' and day_id = 0 """.format(date.today())
-        
         # query_costomer_delete = """delete  from app_cust_price where date = "{}" """.format(date.today())
         # query_location_delete = """delete  from app_location_price where date = "{}" """.format(date.today())
         # query_dtn_load_delete = """ delete  from app_dtn_load where date = "{}" and day_id = 0 """.format(date.today())

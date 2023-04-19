@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib import admin
 from django.forms.models import BaseInlineFormSet
-from .models import Terminal, Customer, Product, Terminal_customer_mapping,Location_price,Cust_price,useraccess,MyFile
+from .models import Terminal, Customer, Product, Terminal_customer_mapping,Location_price,Cust_price,useraccess,MyFile,dtn_load
 from  datetime import date
 from datetime import timedelta
 
@@ -59,6 +59,10 @@ class Cust_priceAdmin(admin.ModelAdmin):
     list_display = ["cust_term_prod","date","price_variance","Final_price","status"]
     list_filter = ["date","status","cust_term_prod"]
 
+class dtn_loadAdmin(admin.ModelAdmin):
+    list_display = ["loadno","date","day_id"]
+    list_filter = ["date"]
+
 
 admin.site.register(Customer, CustomerAdmin)
 admin.site.register(Terminal_customer_mapping,Terminal_customer_mappingAdmin)
@@ -68,7 +72,6 @@ admin.site.register(Cust_price,Cust_priceAdmin)
 admin.site.register(Product)
 admin.site.register(useraccess)
 admin.site.register(MyFile)
-
-
+admin.site.register(dtn_load,dtn_loadAdmin)
 
 

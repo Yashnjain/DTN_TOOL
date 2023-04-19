@@ -99,7 +99,11 @@ class useraccess(models.Model):
     email = models.CharField(max_length=100,null=False,unique=True)
     email_trigger = models.BooleanField(default=True)
     
-
+class metainfo(models.Model):
+    date = models.DateTimeField(auto_now=True)
+    user = models.CharField(max_length = 30 )
+    
+    
 
 
 class MyFile(models.Model):

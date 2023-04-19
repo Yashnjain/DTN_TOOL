@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 
 
+
 from pathlib import Path
 import os
 
@@ -104,32 +105,32 @@ WSGI_APPLICATION = 'price_tracker.wsgi.application'
 
 # Prod ENV
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': os.environ['DBNAME'],
-#         'HOST': os.environ['DBHOST'],
-#         'USER': os.environ['DBUSER'],
-#         'PASSWORD': os.environ['DBPASS'],
-#         'CONN_MAX_AGE' : 600
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ['DBNAME'],
+        'HOST': os.environ['DBHOST'],
+        'USER': os.environ['DBUSER'],
+        'PASSWORD': os.environ['DBPASS'],
+        'CONN_MAX_AGE' : 600
+    }
+}
 
 
 
 
 
 # Prod Database
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dtnprice-database_dev',
-        'HOST': 'bio-dtn.postgres.database.azure.com',
-        'USER': 'biodtnadmin01',
-        'PASSWORD': 'wVRZP7mfd78*gRChPDgVbQf@cavP',
-        'CONN_MAX_AGE': 300
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'dtnprice-database_dev',
+#         'HOST': 'bio-dtn.postgres.database.azure.com',
+#         'USER': 'biodtnadmin01',
+#         'PASSWORD': 'wVRZP7mfd78*gRChPDgVbQf@cavP',
+#         'CONN_MAX_AGE': 300
+#     }
+# }
 
 
 

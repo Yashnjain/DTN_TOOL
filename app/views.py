@@ -3,8 +3,7 @@ from django.shortcuts import render,redirect,reverse
 from django.shortcuts import render
 from django.http import HttpResponse,HttpResponseBadRequest,HttpResponseNotFound,FileResponse,Http404
 from django.views import View
-from app.models import Terminal, Customer, Product, Terminal_customer_mapping,Location_price,Cust_price,dtn_load,MyFile
-# Create your views here.
+from app.models import Terminal, Customer, Product, Terminal_customer_mapping,Location_price,Cust_price,dtn_load,MyFile,metainfo
 from  datetime import date 
 from datetime import timedelta
 from datetime import datetime
@@ -127,7 +126,7 @@ def home(request,id = 0):
         # cust_price_all = Cust_price.objects.objects.filter(date_range = [start_date,end_date])
         # tcpmapping_all  = Terminal_customer_mapping.objects.select_related('customer')
         
-        
+         
             
         
         #sorting datewise
@@ -279,6 +278,15 @@ def home(request,id = 0):
             location_and_customer = sorted(location_and_customer, key=lambda x: x['location_name'].lower()) 
             today_str = str(today)
             yesterday_str = str(yesterday)
+            last_two_day = date.today() - timedelta(days = 2)
+            if id == 0:
+                try:
+                    saveinfo = (metainfo.objects.filter(date__date = today).order_by("-date").values('date').first()['date'])
+                except:   
+                    saveinfo = False 
+            else:
+                saveinfo = "Not_required"
+                              
             context = {
                "l_y_p" : location_and_customer,
                "active" : color,
@@ -288,7 +296,8 @@ def home(request,id = 0):
                "yesterday" : yesterday_str,
                "today" : today_str,
                "last_upload_timestamp" : last_upload_timestamp,
-               "special_discount_active" : special_discount_active
+               "special_discount_active" : special_discount_active,
+               "saveinfo" : saveinfo
             }
             end_time = time.time()
             print(time.time(),"f")
@@ -509,6 +518,8 @@ def home(request,id = 0):
             end_time = time.time()           
             total_time = end_time - start_time
             print(f"Total time taken: {total_time} seconds")   
+          
+            metainfo.objects.create(user = request.user)
             if id==1:
                 return redirect("homeid",1)
             else:
@@ -522,7 +533,7 @@ def home(request,id = 0):
         return HttpResponse ("Getting follwing {} error kindly check".format(e))
 
 def strformat(s):
-    return '"{}"'.format(s)
+    return "'{}'".format(s)
 
 
     
@@ -544,7 +555,7 @@ def genrate_dtn_file(dtnlist : dict,dtncodedict : dict):
     dtncode = ['0008']
     begin = ["BEGIN-BINARY-DATA"]
     header = [strformat('HEADER'),"Customername"]
-    detail_item = [strformat("PRICE"),"Terminal","statecode",strformat("MAG"),"Ethanol","product_price","change amount",effective_date,"18:00"]
+    detail_item = [strformat("PRICE"),"Terminal","statecode",strformat("MAG"),"Ethanol","product_price","change amount",effective_date,"00:01"]
     note  = [strformat("NOTE"),("FOR QUESTIONS PLEASE CONTACT 012-345-6789, DTN@example.com")]
     end = ["END-BINARY-DATA"]
     c.writerow(idpass)
@@ -688,7 +699,9 @@ def fetch_dtn_file_data(id,for_date):
                                             # loc["effective_time"] = "18:00"
                                            
                                             #print("check2")
-                                            supplier[clm["customer__customer"]].append(loc) 
+                                            supplier[clm["customer__customer"]].append(loc)
+                                    supplier[clm["customer__customer"]] = sorted(supplier[clm["customer__customer"]], key=lambda x: x['location'])        
+        supplier = dict(sorted(supplier.items()))                          
         return (supplier,dtn)                                 
     except Exception as e:
         #print("fail")
@@ -729,7 +742,7 @@ def load_data_to_dtn(request,id = 0):
             content_type='text/csv',
             headers={'Content-Disposition': 'attachment; filename="Dtnfile.csv"'},
         )
-        c = csv.writer(response)
+        c = csv.writer(response,doublequote=True)
         data = []
         idpass = ["BUR1","URJA"]
         messagetype  =  ["PRF"]
@@ -737,7 +750,7 @@ def load_data_to_dtn(request,id = 0):
         dtncode = ['0008']
         begin = ["BEGIN-BINARY-DATA"]
         header = [strformat("HEADER"),"Customername"]
-        detail_item = [strformat("PRICE"),"Terminal","statecode",strformat("MAG"),"Ethanol","product_price","change amount",effective_date,"18:00"]
+        detail_item = [strformat("PRICE"),"Terminal","statecode",strformat("MAG"),"Ethanol","product_price","change amount",effective_date,"00:01"]
         note  = [strformat("NOTE"),("FOR QUESTIONS PLEASE CONTACT 012-345-6789, DTN@example.com")]
         end = ["END-BINARY-DATA"]
         c.writerow(idpass)
