@@ -532,8 +532,10 @@ def home(request,id = 0):
         #print(e)
         return HttpResponse ("Getting follwing {} error kindly check".format(e))
 
-def strformat(s):
-    return "'{}'".format(s)
+def strformat(string : str) -> str:
+    # return "'{}'".format(s)
+    return '\"{}\"'.format(string)
+    #return s
 
 
     
@@ -609,9 +611,9 @@ def download_file(request,id):
 def filter_files(request):
     selected_date = request.GET.get('date')
     if selected_date:
-        files = MyFile.objects.filter(created_at__date=datetime.strptime(selected_date, '%Y-%m-%d').date())
+        files = MyFile.objects.filter(created_at__date=datetime.strptime(selected_date, '%Y-%m-%d').date()).order_by("day_id")
     else:
-        files = MyFile.objects.all().order_by("-created_at")
+        files = MyFile.objects.all().order_by("-created_at","-day_id")
     return render(request, 'download.html', {'files': files})
 
 
@@ -742,16 +744,19 @@ def load_data_to_dtn(request,id = 0):
             content_type='text/csv',
             headers={'Content-Disposition': 'attachment; filename="Dtnfile.csv"'},
         )
-        c = csv.writer(response,doublequote=True)
-        data = []
+        c = csv.writer(response,delimiter=',',
+                lineterminator='\r\n',
+                quotechar = "'")
+        # c = csv.writer(response,doublequote=True,quoting=csv.QUOTE_NONNUMERIC, quotechar='"',delimiter= ",")
         idpass = ["BUR1","URJA"]
         messagetype  =  ["PRF"]
         commandline = ["CO2","0001"," / / ","00:00","0000","1","0001","S","$"]
         dtncode = ['0008']
         begin = ["BEGIN-BINARY-DATA"]
-        header = [strformat("HEADER"),"Customername"]
-        detail_item = [strformat("PRICE"),"Terminal","statecode",strformat("MAG"),"Ethanol","product_price","change amount",effective_date,"00:01"]
-        note  = [strformat("NOTE"),("FOR QUESTIONS PLEASE CONTACT 012-345-6789, DTN@example.com")]
+        header = [strformat("HEADER"),strformat("""BioUrja Trading, LLC""")]
+        # detail_item = [strformat("PRICE"),"Terminal","statecode",strformat("Magellan"),"Ethanol","product_price","change amount",effective_date,"00:01"]
+        detail_item = [strformat("PRICE"),"Terminal","statecode",strformat("Magellan"),strformat("Ethanol"),"product_price",effective_date,"00:01"]
+        note  = [strformat("NOTE"),strformat("FOR QUESTIONS PLEASE CONTACT 012-345-6789  DTN@example.com")]
         end = ["END-BINARY-DATA"]
         c.writerow(idpass)
         c.writerow(messagetype)
@@ -768,16 +773,18 @@ def load_data_to_dtn(request,id = 0):
             else:        
                 c.writerow(dtncode)
             c.writerow(begin)
-            header[1] = strformat(key)
+            # for getting coustomer 
+            # header[1] = strformat(key)  
             c.writerow(header)
             for lp  in value:
                 
                 detail_item[1] = strformat(lp["location"])
                 detail_item[2] = strformat(lp["state"])
-                detail_item[5] = format(float(lp["price"]),".4f")
-                detail_item[6] = format(float(lp["change"]),".4f")
-                if float(detail_item[6]) > 0:
-                    detail_item[6] = f"+{detail_item[6]}"
+                detail_item[5] = float(format(float(lp["price"]),".4f"))
+                # change comment 
+                # detail_item[6] = format(float(lp["change"]),".4f")
+                # if float(detail_item[6]) > 0:
+                #     detail_item[6] = f"+{detail_item[6]}"
                 c.writerow(detail_item)
             c.writerow(note)
             c.writerow(end)        
@@ -790,8 +797,8 @@ def load_data_to_dtn(request,id = 0):
         except:
             raise Http404
         else:
-            try:
-                check_version = MyFile.objects.filter(created_at__date = date.today()).values("version").order_by("-version").first()["version"]
+            try: 
+                check_version = MyFile.objects.filter(created_at__date = date.today(),day_id = id).values("version").order_by("-version").first()["version"]
                 MyFile.objects.create(name = timestamp,file = filename,version = check_version + 1,day_id = id)
             except:
                 MyFile.objects.create(name = timestamp,file = filename,day_id = id)

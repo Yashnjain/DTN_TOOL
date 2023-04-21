@@ -212,6 +212,28 @@ function checkSet(e) {
         showConfirmation(cust_form);
     }
 }
+function checkSet2(event, form) {
+    event.preventDefault(); // prevent the default form submission
+    const url = form.action;
+    const params = new URLSearchParams(new FormData(form)).toString();
+    const newTab = window.open();
+    newTab.location.href = url + "?" + params; // set the URL of the new tab to the form submission result
+  }
+// function checkSet2(e,form) {
+//     e.preventDefault();
+//     // var cust_form = e.target.parentNode;
+//     if (set1.size == set_size) {
+//         showSpin();
+//         // cust_form.submit();
+//         var url = form.action;
+//         var params = new URLSearchParams(new FormData(form)).toString();
+//         window.open(url + "?" + params, "_blank");
+
+//     } else {
+//         showConfirmation(cust_form);
+//     }
+// }
+
 function showSpin() {
 
     var loader1 = document.querySelector(".loader");
