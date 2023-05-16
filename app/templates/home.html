@@ -1,110 +1,155 @@
+{% load custom_filters %}
+{% load static %}
 <!doctype html>
 <html lang="en">
 
 <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
+    <!-- for including jquery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fontawesome/4.7.0/css/font-awesome.min.css"> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&family=Noto+Serif:wght@700&display=swap"
+        rel="stylesheet">
 
-    <link rel="stylesheet" href="/static/home1.css">
-    <link href="https://unpkg.com/bootstrap-table@1.21.2/dist/extensions/sticky-header/bootstrap-table-sticky-header.css" rel="stylesheet">
-    <script src="https://unpkg.com/bootstrap-table@1.21.2/dist/extensions/sticky-header/bootstrap-table-sticky-header.min.js"></script>
+    <link rel="stylesheet" href="/static/home_0301.css">
+
+    <link rel="icon" type="image/x-icon" href="https://www.biourja.com/wp-content/uploads/Favicon_Favicon.png">
+
+    <meta name="theme-color" content="#ffffff">
 
     <title>DTN_HOME</title>
-    <style>
-        th{
-            position: sticky;
-            top:0;
-        }
-    </style>
 
-    <!-- <button onclick="increment()">+</button>
-    <button onclick="decrement()">-</button> -->
     <script>
 
-        function stepup(arg) {
-            arg = arg + 0.1
-        }
-        function increment() {
-            
-            document.getElementById('demoInput').stepUp();
-        }
-        function decrement() {
-            document.getElementById('demoInput').stepDown();
-        }
+        window.addEventListener("load", () => {
+            const loader = document.querySelector(".loader");
 
-        $('.datepicker').datepicker({
-            inline: true
+            loader.classList.add("loader--hidden");
+
+            loader.addEventListener("transitionend", () => {
+                loader.style.display = "none";
+            });
         });
-
-
-
-        // --------------------------------------Table Header Function----------------------------
-
 
     </script>
 
 </head>
 
 <body>
-    <div class="fixed-top">
+    <div class="loader"></div>
+    <!-- // --------------------------------------Table Header Function---------------------------- -->
+    <div class="fixed-top" id="header1">
         <header>
-            <!-- <img src="biourja_logo.png" alt="LOGO_BIOURJA"
-                style="width:100px; height:50px; border-radius: 5px;display: inline-block;"> -->
+
             <img src="https://www.biourja.com/wp-content/uploads/BioUrja_Companies_Logos_Retina_Artboard-9.png"
                 data-rjs="https://www.biourja.com/wp-content/uploads/BioUrja_Companies_Logos_Retina_Artboard-9.png"
-                alt="BioUrja Group" class="sticky-logo" width="126" height="66" style="padding-top: 12px; padding-left:15px ;">
+                alt="BioUrja Group" class="sticky-logo" width="80" height="45"
+                style="padding-top: 12px; padding-left:15px ; margin-top: 10px;margin-bottom: 10px;">
+
+
             <div class="header-left">
-                <h1
-                    style="display: inline-block; font-size: 40px; vertical-align: auto; text-align: center; margin-top: 68px;font-size: 70px;">
-                    DTN TOOL</h1>
+
+                <h1 class="DTN">DTN TOOL</h1>
+
             </div>
+
             <div class="header-right">
-                <div class="user-info">
-                    <img src="https://graph.microsoft.com/v1.0/teams/172b0cce-e65d-44ce-9a49-91d9f2e8491e/photo"
-                        alt="User Logo" style="border-color: white;">
+                <div class="user-info" style="padding-top: 20px;">
+                    <img src="https://i1.wp.com/wilcity.com/wp-content/uploads/2020/06/115-1150152_default-profile-picture-avatar-png-green.jpg?fit=820%2C860&ssl=1"
+                        alt="User Logo" style="border-color: white; margin-bottom: 10px;">
                     <p>{{request.user}}</p>
                 </div>
             </div>
         </header>
-        <div style="margin-bottom: 20px; margin-top: 20px;">
+        <div>
 
-            <div style="display: inline-block;">
-                <label style="padding-right:10px; margin-left:10px ; display: inline-block;">Select Date:</label><input
-                    type="date" id="date">
-            </div>
-            <!-- <input class="btn btn-secondary" style="display: inline-block;  margin-left: 650px;" type="submit" -->
-            <label style="padding-right:10px; margin-left:10px ; display: inline-block;">Submit Prices:</label>
-            <input class="btn btn-secondary"   form="myform" style="display: inline-block;" type="submit" value="Submit" href="/submit"
-                onclick="if (!confirm('Are you sure you want to Submit ?')) return false;" onc>
+            {% if active %}
+            <form action='/' method="get" style="display:inline">
+                <input class="btn btn-secondary cust-btn btn-load"
+                    style="background-color:rgb(164, 245, 82); color: black; font-weight: 600;" type="submit"
+                    value="Today" href="/" onclick="checkSet(event)">
+            </form>
+            {% if yesterday_active %}
+            <form action='/1' method="get" style="display:inline">
+                <input class="btn btn-secondary  cust-btn btn-load" type="submit" value="Prev day" href="/1"
+                    onclick="checkSet(event)">
+            </form>
+            {% else %}
+            <form action='/1' method="get" style="display:inline">
+                <input class="btn btn-secondary  cust-btn btn-load" type="submit" value="Prev day" href="/1" disabled>
+            </form>
+            {% endif %}
+            {% else %}
+            <form action='/' method="get" style="display:inline">
+                <input class="btn btn-secondary  cust-btn btn-load" type="submit" value="Today" href="/"
+                    onclick="checkSet(event)">
+            </form>
+            <form action='/1' method="get" style="display:inline">
+                <input class="btn btn-secondary  cust-btn btn-load"
+                    style="background-color:rgb(164, 245, 82); color: black;  font-weight: 600;" type="submit"
+                    value="Prev day" href="/1" onclick="checkSet(event)">
+            </form>
+            {% endif %}
+            <input class="btn btn-secondary cust-btn" form="myform" style="display: inline-block;" type="submit"
+                value="Save" href="/submit" onclick="updateSetSize();">
+            {% if active %}
+            {% if submit_active %}
+            <form id="uploadForm" action='/submit' method="get" style="display:inline">
+                <input class="btn btn-secondary  cust-btn" type="submit" value="Upload"
+                    onclick="if (!confirm('Are you sure you want to Submit ?')) return false;">
+            </form>
+            {% else %}
+            <form action='/submit' method="get" style="display:inline">
+                <input class="btn btn-secondary  cust-btn" type="submit" value="Upload"
+                    onclick="if (!confirm('Are you sure you want to Submit ?')) return false;" disabled>
+            </form>
+            {% endif %}
+            {% else %}
+            {% if submit_active %}
+            <form id="uploadForm" action='/submit/1' method="get" style="display:inline">
+                <input class="btn btn-secondary  cust-btn" type="submit" value="Upload"
+                    onclick="if (!confirm('Are you sure you want to Submit ?')) return false; ">
+            </form>
+            {% else %}
+            <form action='/submit/1' method="get" style="display:inline">
+                <input class="btn btn-secondary  cust-btn" type="submit" value="Upload"
+                    onclick="if (!confirm('Are you sure you want to Submit ?')) return false;" disabled>
+            </form>
+
+            {% endif %}
+            {% endif %}
+            <form action='/files' method="get" style="display:inline">
+                <input class="btn btn-secondary  cust-btn btn-load" type="submit" value="View Files" href="/files"
+                onclick="checkSet2(event, this.form)">
+            </form>
+            <!-- <form action='/Retrive' method="get" style="display:inline">
+                <input class="btn btn-secondary  cust-btn btn-load" type="submit" value="Retrive Data" href="/files"
+                onclick="checkSet2(event, this.form)">
+            </form> -->
 
             <div class="abc1">
-
-                <a class="button1" href="/logout">
-                    <img src="https://pbs.twimg.com/profile_images/378800000639740507/fc0aaad744734cd1dbc8aeb3d51f8729_400x400.jpeg"
-                        style="width: 25px;
+                <form method="post" id="signout" action="/accounts/logout/">
+                    {% csrf_token %}
+                    <a class="button1" onclick="logoutFun()"
+                        style="padding:5px; border-top-left-radius: 10px; border-bottom-left-radius: 10px;">
+                        <img src="data:image/jpeg;base64,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"
+                            style="width: 25px;
                         border-radius: 50px;
                         float: left;">
-
-                    <div class="logout">LOGOUT</div>
-
-                </a>
-
+                        <div class="logout" style="height: 20px;">Logout</div>
+                    </a>
+                </form>
             </div>
-
         </div>
-
     </div>
     <!-- ----------------------------------------------------------------------Start of Table----------------------------------------------------- -->
 
@@ -113,103 +158,244 @@
         <div class="row tbl-fixed">
             <form id="myform" action='' method="post">
                 {% csrf_token %}
-                <!-- <tr> <td><input type="submit" value="Submit"></td></tr> -->
-            <table  style="margin-top:10px" >
-                <thead>
-                    <tr>
-                         
-                        <th  scope="col" style="color: azure; background-color: black; ">Location</th>
-                        <th scope="col" style="color: azure; background-color: black;">CurrPrice</th>
-                        <th scope="col" style="color: azure; background-color: black;">PrevPrice</th>
-                        <th scope="col" style="color: azure; background-color: black;">Diff</th>
+                <table id="myTable">
+                    <thead>
+
+                        <th scope="col" style="color: azure; background-color: black; ">Location</th>
+                        <th scope="col" style="color: azure; background-color: black;">{{yesterday}}</th>
+                        <th scope="col" style="color: azure; background-color: black;">{{today}}</th>
+                        <th scope="col" style="color: azure; background-color: black;">Difference</th>
                         <th scope="col" style="color: azure; background-color: black;">Status</th>
-        
+
                         <!-- ---------------------------------Customer Cols Start Here------------------------------- -->
-                        
-                        
-                        {% for l in l_y_p  %}
-                            {% if forloop.first %}
-                            {% for c in l.customer %}
-                         
-                        <th scope="col" class="cust-container"
-                            style="color: azure; background-color: black;  width: 140px; text-align: center ;">{{c.customer_name}}</th>
-                            {% endfor %}
-                            {% endif %}
-                        {% endfor %}
-        
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for l in  l_y_p %}
-                    <tr>
-                         
-                        <td style="line-height:20px;">{{l.location_name}}</td>
-                        <td>{{l.new_price}}</td>
-                        <td>{{l.yesterday_price}}</td>
-                        
-                        
-        
-        
-
-                        <td><input type="number" step=any style="width: 100px; white-space: nowrap;" name = {{"L"|add:l.location_id}} value={{l.price_diff}}  ></td>
-                        
-        
-                        <!--------------------------Status Column------------------- -->
-                        <td></td>
-        
-                        <!-- ------------------------------------------Customer column values ---------------------------------- -->
+                        {% for l in l_y_p %}
+                        {% if forloop.first %}
                         {% for c in l.customer %}
-                        <td>
-                           
-                            <div class="form-check form-check-inline" style="display: block-inline">
-                                {% if  c.status %}
-                                <input class="form-check-input-inline" type="checkbox" id="inlineCheckbox2" checked
-                                    style="margin-right: 3px; display: block-inline; padding-right: 5px;" name ={{"C"|add:c.ctpm}}  >
-                                {% else %}    
-                                <input class="form-check-input-inline" type="checkbox" id="inlineCheckbox2" unchecked
-                                    style="margin-right: 3px; display: block-inline; padding-right: 5px;" name ={{"C"|add:c.ctpm}}>
-                                {% endif %}
-                                <input type="number" step=any  style="width: 100px; white-space: nowrap;"  value={{c.price_variance}}  name={{"P"|add:c.ctpm}}  >
-                            </div>
-                        </td>
+
+                        <th scope="col" class="cust-container">{{c.customer_name}} </th>
                         {% endfor %}
-                    </tr>
-                    {% endfor %}
-                    <!-- --------------------------------------------------------End of Row  --------------------------------------------------   -->
-                   
-                   <!-- <tr> <td><input type="submit" value="Submit"></td></tr> -->
-                </tbody>
-            </table>
-        </form> 
+                        {% endif %}
+                        {% endfor %}
+
+
+                    </thead>
+                    <tbody>
+                        {% for l in l_y_p %}
+
+                        <tr class="r1">
+                            <td style="line-height:20px;">{{l.location_name}}</td>
+
+                            <div class="calculators" onload="AutoCalc()">
+
+                                <td id={{"prev"|add:l.location_id}} data={{l.yesterday_price}}>{{l.yesterday_price}}
+                                </td>
+
+                                {% if l.new_price %}
+                                <td id={{"curr"|add:l.location_id}} data={{l.new_price}}
+                                    style="text-align: center; color: black;">{{l.new_price}}</td>
+                                {% else %}
+                                <td id={{"curr"|add:l.location_id}} data={{l.yesterday_price|add_floats:l.price_diff}}
+                                    style="text-align: center; color: black;">
+                                    {{l.yesterday_price|add_floats:l.price_diff}}</td>
+                                {% endif %}
+
+
+
+                                
+                                <td>
+
+                                    {% if active %}
+                                    <input class="diffText moveFocusDown" type="text" id={{"diff"|add:l.location_id}}
+                                        value={{l.price_diff}} name={{"L"|add:l.location_id}} data={{l.price_diff}}
+                                        oninput="AutoCalc(this); checkDecimal(this); " onblur="checkOver(this)"
+                                        onfocus="setField(this)">
+                                    {% else %}
+                                    <input class="diffText  read-only" type="text" id={{"diff"|add:l.location_id}}
+                                        value={{l.price_diff}} name={{"L"|add:l.location_id}} data={{l.price_diff}}
+                                        oninput="AutoCalc(this); checkDecimal(this); " onblur="checkOver(this)"
+                                        onfocus="setField(this)" readonly tabindex="-1">
+
+                                    {% endif %}
+                                </td>
+
+                            </div>
+
+
+
+                            <!--------------------------Status Column------------------- -->
+                            {% if dtnloadsubmit %}
+                            <td title="{{last_upload_timestamp}}" class="Status">&#x2705;</td>
+                            {% comment %} <td title={{last_upload_timestamp|date:"m-d-Y-h:ia"}} class="Status">&#x2705;</td> {% endcomment %}
+                            {% else %}
+                            {% if saveinfo %}
+                            <td title="{{saveinfo}}" class="Status">&#10060;</td>
+                            {% comment %} <td title={{saveinfo|date:"m-d-Y-h:ia"|add_string:"Saved on"}} class="Status">&#10060;</td> {% endcomment %}
+                            {%else%}
+                            <td title="Not saved for today" class="Status">&#10060;</td>
+                            {% endif %}
+                            {% endif %}
+
+                            <!-- ------------------------------------------Customer column values ---------------------------------- -->
+                            {% for c in l.customer %}
+                            <td>
+                                <div class="form-check form-check-inline" style="display: block-inline">
+                                    {% if c.status %}
+                                    <div class="cust-p-container"
+                                        style="display: flex; justify-content:center; align-items: center;">
+
+                                        <input class="form-check-input-inline" type="checkbox" id={{"C"|add:c.ctpm}}
+                                            checked onclick="isEnable(this)"
+                                            style="margin-right: 3px; display: block-inline; padding-right: 5px;"
+                                            name={{"C"|add:c.ctpm}}>
+
+                                        <div class="input-group">
+
+                                            <input type="text" id={{"P"|add:c.ctpm}} class="cust-inp"
+                                                value={{c.price_variance}} name={{"P"|add:c.ctpm}}
+                                                oninput="checkDecimal(this)" onload="checkover2(this.id);" onblur="checkover2(this.id);" />
+                                            <div class="input-buttons" style="margin-right: 3px;">
+                                                <button type="button" class="plus" id={{"ADD"|add:c.ctpm}}
+                                                    onclick="increaseValue({{ c.ctpm }})"></button>
+                                                <button type="button" class="button minus" id={{"SUB"|add:c.ctpm}}
+                                                    onclick="decreaseValue({{c.ctpm}})"></button>
+                                            </div>
+                                        </div>
+                                        {% if special_discount_active %}
+                                        <div class="dropdown" style="margin-left: 2px;" id={{"DRP_B"|add:c.ctpm}}
+                                            title="Update Base Price">
+
+                                            <button class=" dropdown-toggle drp-btn " type="button"
+                                                data-toggle="dropdown" aria-haspopup="true" id={{"DRP_btn"|add:c.ctpm}}
+                                                aria-expanded="false " data_for_id={{c.ctpm}} data_c={{l.new_price}}
+                                                data_p={{l.yesterday_price|add_floats:l.price_diff}}
+                                                data-curr={{"curr"|add:l.location_id}} onclick="generateDRP(this)" data_for_form="1" data_drp = {{ c.base_price }} data_in_curr="">
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby={{"DRP_btn"|add:c.ctpm}}
+                                                id={{"DRP_M"|add:c.ctpm}} style="height: 100px; width: 200px;">
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        {% endif %}
+                                    </div>
+                                   
+
+                                    {% else %}
+                                    <div class="cust-p-container"
+                                        style="display: flex; justify-content: center; align-items: center;">
+
+
+                                        <input class="form-check-input-inline" type="checkbox" id={{"C"|add:c.ctpm}}
+                                            unchecked onclick="isEnable(this)"
+                                            style="margin-right: 3px; display: block-inline; padding-right: 5px;"
+                                            name={{"C"|add:c.ctpm}}>
+
+                                        <div class="input-group">
+
+                                            <input type="text" id={{"P"|add:c.ctpm}} class="cust-inp"
+                                                value={{c.price_variance}} name={{"P"|add:c.ctpm}}
+                                                oninput="checkDecimal(this)" disabled onload="checkover2(this.id);" onblur="checkover2(this.id);" />
+                                            <div class="input-buttons" style="margin-right: 3px;">
+                                                <button type="button" class="plus" id={{"ADD"|add:c.ctpm}}
+                                                    onclick="increaseValue({{c.ctpm}})"></button>
+                                                <button type="button" class="button minus" id={{"SUB"|add:c.ctpm}}
+                                                    onclick="decreaseValue({{c.ctpm}})"></button>
+                                            </div>
+                                        </div>
+                                        {% if special_discount_active %}
+                                        <div class="dropdown" style="margin-left: 2px;" id={{"DRP_B"|add:c.ctpm}}
+                                            title="Update Base Price">
+
+                                            <button class=" dropdown-toggle drp-btn " type="button"
+                                                data-toggle="dropdown" aria-haspopup="true" id={{"DRP_btn"|add:c.ctpm}}
+                                                aria-expanded="false " data_for_id={{c.ctpm}} data_c={{l.new_price}}
+                                                data_p={{l.yesterday_price|add_floats:l.price_diff}}
+                                                data-curr={{"curr"|add:l.location_id}} onclick="generateDRP(this)" data_for_form="1" data_drp = {{ c.base_price }} data_in_curr=""  disabled>
+                                            </button>
+                                            <div class="dropdown-menu" aria-labelledby={{"DRP_btn"|add:c.ctpm}}
+                                                id={{"DRP_M"|add:c.ctpm}} style="height: 100px; width: 200px;">
+                                            </div>
+                                        </div>
+                                        {%else%}
+                                        {% endif %}
+                                    </div>
+
+                                    {% endif %}
+                                </div>
+
+                            </td>
+                            {% endfor %}
+                            <!-- ------------------------------------------Customer column values ---------------------------------- -->
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </form>
         </div>
-    </div> 
-    
-    <!-- <div class="sticky-top"> -->
-        <!-- <table class="table table-bordered" style="margin-top: 160px; float: left;" id="table" data-show-columns="true" > -->
-        
+    </div>
+    <script src="{% static 'script_main.js' %}"></script>
 
-
-
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+    
 </body>
+    <!-- <script>
 
+            // Set the time in milliseconds for the inactivity timeout
+            // const INACTIVITY_TIMEOUT = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
+            const INACTIVITY_TIMEOUT = 5* 1000; //  10 seconds in milliseconds
+
+            let inactivityTimer;
+
+            // Start the inactivity timer when the page is loaded or reloaded
+            function startInactivityTimer() {
+            // Clear any existing inactivity timer
+            clearTimeout(inactivityTimer);
+            
+
+        //Reload After Confirm
+            // Start a new inactivity timer
+            // inactivityTimer = setTimeout(() => {
+            //     // Reload the page
+            //     if (confirm("You have been inactive for a while. Do you want to reload the page?")) {
+                
+            //         // Reload the page if the user clicks "OK"
+            //         location.reload();
+            //     }
+            //     // location.reload();
+            // }, INACTIVITY_TIMEOUT);
+            
+
+        //Reload Directly
+             inactivityTimer = setTimeout(() => {
+                location.reload();
+            }, INACTIVITY_TIMEOUT);
+            
+        }    
+            // Reset the inactivity timer when the user performs any activity on the page
+            function resetInactivityTimer() {
+            startInactivityTimer();
+            }
+
+            // Attach the event listeners to reset the inactivity timer on user activity
+            window.addEventListener('load', startInactivityTimer);
+            window.addEventListener('mousemove', resetInactivityTimer);
+            window.addEventListener('keypress', resetInactivityTimer);
+
+
+            window.addEventListener('beforeunload', function (e) {
+           
+            const unsavedChanges = Array.from(document.querySelectorAll('input, textarea'))
+                .some((el) => el.value !== el.defaultValue);
+            if (unsavedChanges) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+            });
+
+    </script> -->
 </html>
-
-
-<!-- 
-
- <input type="submit" onclick="ClickFunction()">
-
-
-

@@ -14,3 +14,6 @@ def add_floats(value, arg):
         return round(float(value) + float(arg),4)
     except (ValueError, TypeError):
         return ''
+
+
+    

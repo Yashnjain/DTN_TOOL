@@ -12,6 +12,7 @@ class Terminal(models.Model):
     location = models.CharField(max_length=100,null=False,unique=True,blank=False)
     state = models.CharField(max_length=10,choices= us_state_abbrev)
     location_status = models.BooleanField(default=False)
+    location_code = models.CharField(max_length=100,blank=True,null=True)
 
     def __str__(self) -> str:
         return self.location
@@ -25,6 +26,10 @@ class Customer(models.Model):
     cust_status = models.BooleanField(default=False)
     dtn = models.CharField(max_length = 100,blank = True)
     send_format = models.IntegerField(null = False,blank= False,default=0)
+    mail_list_to = models.CharField(max_length=1000,blank=True,null=True)
+    mail_list_bcc = models.CharField(max_length=1000,blank=True,null=True)
+    company = models.CharField(max_length=100,blank=True,null=True)
+    customer_code = models.CharField(max_length=100,blank=True,null=True)
     # DTN = 0
     # Mail = 1
     
@@ -127,6 +132,6 @@ def create_user_profile(sender, instance, created, **kwargs):
         email = instance.email.lower()
         if useraccess.objects.filter(email = email):
             instance.groups.add(Group.objects.get(name='trader'))
-        else:
-            print("ksnnwlofjwffjl")    
+        
+               
         

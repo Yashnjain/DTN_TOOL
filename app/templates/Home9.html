@@ -224,10 +224,10 @@
 
                             <!--------------------------Status Column------------------- -->
                             {% if dtnloadsubmit %}
-                            <td title={{last_upload_timestamp|date:"m-d-Y-H:ia"}} class="Status">&#x2705;</td>
+                            <td title={{last_upload_timestamp|date:"m-d-Y-h:ia"}} class="Status">&#x2705;</td>
                             {% else %}
                             {% if saveinfo %}
-                            <td title={{saveinfo|date:"m-d-Y-H:ia"}} class="Status">&#10060;</td>
+                            <td title={{saveinfo|date:'m-d-Y-h:ia'}} class="Status">&#10060;</td>
                             {%else%}
                             <td title="Not updated for today" class="Status">&#10060;</td>
                             {% endif %}
