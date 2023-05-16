@@ -129,9 +129,12 @@
             {% endif %}
             <form action='/files' method="get" style="display:inline">
                 <input class="btn btn-secondary  cust-btn btn-load" type="submit" value="View Files" href="/files"
-                    onclick="checkSet(event)">
-
+                onclick="checkSet2(event, this.form)">
             </form>
+            <!-- <form action='/Retrive' method="get" style="display:inline">
+                <input class="btn btn-secondary  cust-btn btn-load" type="submit" value="Retrive Data" href="/files"
+                onclick="checkSet2(event, this.form)">
+            </form> -->
 
             <div class="abc1">
                 <form method="post" id="signout" action="/accounts/logout/">
@@ -221,10 +224,10 @@
 
                             <!--------------------------Status Column------------------- -->
                             {% if dtnloadsubmit %}
-                            <td title={{last_upload_timestamp|date:"m-d-Y-H:ia"}} class="Status">&#x2705;</td>
+                            <td title={{last_upload_timestamp|date:"m-d-Y-h:ia"}} class="Status">&#x2705;</td>
                             {% else %}
                             {% if saveinfo %}
-                            <td title={{saveinfo|date:"m-d-Y-H:ia"}} class="Status">&#10060;</td>
+                            <td title={{saveinfo|date:'m-d-Y-h:ia'}} class="Status">&#10060;</td>
                             {%else%}
                             <td title="Not updated for today" class="Status">&#10060;</td>
                             {% endif %}
@@ -250,7 +253,7 @@
                                                 oninput="checkDecimal(this)" />
                                             <div class="input-buttons" style="margin-right: 3px;">
                                                 <button type="button" class="plus" id={{"ADD"|add:c.ctpm}}
-                                                    onclick="increaseValue({{c.ctpm}})"></button>
+                                                    onclick="increaseValue({{ c.ctpm }})"></button>
                                                 <button type="button" class="button minus" id={{"SUB"|add:c.ctpm}}
                                                     onclick="decreaseValue({{c.ctpm}})"></button>
                                             </div>

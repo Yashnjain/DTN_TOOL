@@ -130,6 +130,15 @@ def get_terminal_dict(tcpmapping_list,ctp_id):
     return filter_tcp
 
 
+def get_terminal_mail_dict(tcpmapping_list,ctp_id):
+    filter_tcp = []
+    for tcp in tcpmapping_list:
+        if tcp['id'] == ctp_id and tcp["status"] ==True and tcp['customer__send_format'] == 1:
+            filter_tcp.append(tcp)
+    return filter_tcp
+
+
+
 
 def get_location_list(location_list,date,id):
     filter_location = []
@@ -200,3 +209,8 @@ def get_today_cust_price_dict(cust_all,date):
             # filter_dict[cust["cust_term_prod_id"]] = cust["price_variance"]
             filter_dict[cust["cust_term_prod_id"]] = cust
     return filter_dict       
+
+
+def strformat(string : str) -> str:
+    # return "'{}'".format(s)
+    return '\"{}\"'.format(string)

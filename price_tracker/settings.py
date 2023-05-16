@@ -103,6 +103,7 @@ WSGI_APPLICATION = 'price_tracker.wsgi.application'
 #  }
 
 
+
 # Prod ENV
 
 DATABASES = {
@@ -131,6 +132,7 @@ DATABASES = {
 #         'CONN_MAX_AGE': 300
 #     }
 # }
+
 
 
 
@@ -220,8 +222,10 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp-mail.outlook.com'
-EMAIL_HOST_USER = "itdevsupport@biourja.com"
-EMAIL_HOST_PASSWORD = "Z@^>Nzh'x85]@dL?"
+# EMAIL_HOST_USER = "itdevsupport@biourja.com"
+EMAIL_HOST_USER = "prism.support@biourja.com"
+# EMAIL_HOST_PASSWORD = "Z@^>Nzh'x85]@dL?"
+EMAIL_HOST_PASSWORD = "Chirag0987"
 
 ACCOUNT_EMAIL_VERIFICATION = "none"
 
@@ -233,6 +237,8 @@ ACCOUNT_EMAIL_VERIFICATION = "none"
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 100000000
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 100000000
+
+
 
 
 
@@ -262,7 +268,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 
 
-#File_dev
+
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR,"media")
 

@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-  <!-- <link rel="stylesheet" href="home3.css"> -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="icon" type="image/x-icon" href="https://www.biourja.com/wp-content/uploads/Favicon_Favicon.png">
@@ -18,31 +17,24 @@
     href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&family=Noto+Serif:wght@700&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="/static/home_flw_style.css">
-  <title>DTN_HOME</title>
+  <title>DTN_FILES</title>
   <style>
     .table-container {
-      /* margin-top: 100px; */
-      /* margin-top: 100px; */
       margin-left: 25px;
       margin-right: 25px;
       height: calc(90vh);
       overflow-y: scroll;
       width: calc(100% - 50px);
-      /* box-shadow:10px 10px 10px 10px #060606; */
-      /* box-shadow: 0 0 40px black; */
-      /* box-shadow: -5px 5px 5px black, 5px 5px 5px black, 5px -5px 5px black; */
-      /* box-shadow: 5px 5px 5px black, -5px 5px 5px black, 5px -5px 5px black; */
       box-shadow: 0 10px 10px -5px black, -10px 0 20px -5px black, 10px 0 20px -5px black;
       border-radius: 10px;
-
-      /* width: calc(100%); */
     }
 
     .sticky-wrapper {
       display: flex;
       justify-content: space-between;
     }
-    #backbtn{
+
+    #backbtn {
       background-color: rgb(92, 91, 91);
     }
   </style>
@@ -51,12 +43,12 @@
 <body>
   <div class="container1">
     <div class="sticky-wrapper" style=" margin-top: 5px;">
-      <form  action='/' method="get" style="display:inline">
-        <!-- <input class="btn btn-secondary  cust-btn" type="submit"   value="View Files" href="/"> -->
-        <button class="btn btn-secondary cust-btn" type="submit" style="  display: inline; margin-left: 25px;" title="Back to HomePage" href="/">Back</button>
-    </form>
+      <form action='/' method="get" style="display:inline">
+        <button class="btn btn-secondary cust-btn" style="  display: inline; margin-left: 25px;" title="Close"
+          onclick='window.close()'>Close</button>
+      </form>
 
-      
+
 
       <form method="get" action="/files"> <label for="date">Select a date:</label> <input type="date" id="date"
           name="date"> <button class="btn btn-secondary cust-btn" style="margin-bottom: 5px;"
@@ -65,13 +57,26 @@
     </div>
 
     <div class="table-container">
-      <table class="table .table-responsive">
+      <table id="emp-table" class="table .table-responsive">
         <thead>
           <tr>
-            <th>Download link</th>
-            <th>Name</th>
-            <th>Version</th>
-            <th>Created At</th>
+            <th col-index=1>Download link</th>
+            <th col-index=2>Name</th>
+            <th col-index=3>Version
+              <select class="table-filter" onchange="filter_rows()">
+                <option value="all"></option>
+              </select>
+            </th>
+            <th col-index=4>Created At
+              <!-- <select class="table-filter" onchange="filter_rows()">
+                <option value="all"></option>
+              </select> -->
+            </th>
+            <th col-index=5 >Day
+              <select class="table-filter" onchange="filter_rows()">
+                <option value="all"></option>
+              </select>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -81,10 +86,18 @@
             <td>{{ file.name }}</td>
             <td>{{ file.version }}</td>
             <td>{{ file.created_at }}</td>
+            {% if file.day_id %}
+
+            <td>Yesterday</td>
+
+            {%else%}
+
+            <td>Today</td>
+            {%endif%}
           </tr>
           {% empty %}
           <tr>
-            <td colspan="4">No files found.</td>
+            <td colspan="5">No files found.</td>
           </tr>
           {% endfor %}
         </tbody>
@@ -98,6 +111,113 @@
       var element = document.getElementById("Vfile");
       element.classList.toggle("selected");
     }
+    getUniqueValuesFromColumn()
+
+    function getUniqueValuesFromColumn() {
+
+      var unique_col_values_dict = {}
+
+      allFilters = document.querySelectorAll(".table-filter")
+      allFilters.forEach((filter_i) => {
+        col_index = filter_i.parentElement.getAttribute("col-index");
+        const rows = document.querySelectorAll("#emp-table > tbody > tr")
+
+        rows.forEach((row) => {
+          cell_value = row.querySelector("td:nth-child(" + col_index + ")").innerHTML;
+          // if the col index is already present in the dict
+          if (col_index in unique_col_values_dict) {
+
+            if (col_index == 4) {
+
+            }
+            // if the cell value is already present in the array
+            if (unique_col_values_dict[col_index].includes(cell_value)) {
+
+            } else {
+              unique_col_values_dict[col_index].push(cell_value)
+
+            }
+
+          } else {
+            unique_col_values_dict[col_index] = new Array(cell_value)
+          }
+        });
+
+      });
+      updateSelectOptions(unique_col_values_dict)
+    };
+
+    // Add <option> tags to the desired columns based on the unique values
+
+      function updateSelectOptions(unique_col_values_dict) {
+        allFilters = document.querySelectorAll(".table-filter")
+
+        allFilters.forEach((filter_i) => {
+          col_index = filter_i.parentElement.getAttribute('col-index')
+
+          // sort the unique values in ascending order numerically
+          unique_col_values_dict[col_index].sort((a, b) => {
+            return Number(a) - Number(b);
+          });
+
+          unique_col_values_dict[col_index].forEach((i) => {
+            filter_i.innerHTML = filter_i.innerHTML + `\n<option value="${i}">${i}</option>`
+          });
+        });
+      };
+
+    // Create filter_rows() function
+
+    // filter_value_dict {2 : Value selected, 4:value, 5: value}
+
+    function filter_rows() {
+      allFilters = document.querySelectorAll(".table-filter")
+      var filter_value_dict = {}
+
+      allFilters.forEach((filter_i) => {
+        col_index = filter_i.parentElement.getAttribute('col-index')
+
+        value = filter_i.value
+        if (value != "all") {
+          filter_value_dict[col_index] = value;
+        }
+      });
+
+      var col_cell_value_dict = {};
+
+      const rows = document.querySelectorAll("#emp-table tbody tr");
+      rows.forEach((row) => {
+        var display_row = true;
+
+        allFilters.forEach((filter_i) => {
+          col_index = filter_i.parentElement.getAttribute('col-index')
+          col_cell_value_dict[col_index] = row.querySelector("td:nth-child(" + col_index + ")").innerHTML
+        })
+
+        for (var col_i in filter_value_dict) {
+          filter_value = filter_value_dict[col_i]
+          row_cell_value = col_cell_value_dict[col_i]
+
+          if (row_cell_value.trim() === filter_value && filter_value != "all") {
+             display_row = true; 
+            } 
+          else if (filter_value != "all") {
+           display_row = false;
+           break; 
+          }
+        }
+
+        if (display_row == true) {
+          row.style.display = "table-row"
+
+        } else {
+          row.style.display = "none"
+
+        }
+      })
+
+    }
+
   </script>
 
   <!-- Optional JavaScript -->
