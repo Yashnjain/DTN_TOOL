@@ -1,16 +1,14 @@
-from django.shortcuts import render,redirect,reverse
+from django.shortcuts import render,redirect
 from django.shortcuts import render
 from django.http import HttpResponse,HttpResponseBadRequest,HttpResponseNotFound
-from django.views import View
-from app.models import Terminal, Customer, Product, Terminal_customer_mapping,Location_price,Cust_price,dtn_load
-# Create your views here.
+from app.models import   Terminal_customer_mapping,Location_price,Cust_price,dtn_load
+
 from  datetime import date 
 from datetime import timedelta
-import pandas as pd
 from django.contrib.auth.decorators import login_required,permission_required,user_passes_test
-from django.db import transaction
+
 import csv
-from django.core.exceptions import PermissionDenied,ValidationError
+from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User,Group,GroupManager
 from django.core.mail import send_mail
 from app.mail import mail_send,location_price_mail

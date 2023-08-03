@@ -1,7 +1,9 @@
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponseNotFound
 from datetime import date,timedelta
 from app.models import dtn_load
+from functools import wraps
+from django.http import HttpResponseForbidden
+from django.contrib.auth import authenticate
 
 def authorisation(func):
     def wrapper(request, *args, **kwargs):
@@ -10,6 +12,29 @@ def authorisation(func):
         else:
             raise PermissionDenied("You do not have permission to access this page.")
     return wrapper
+
+
+def validate_user(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        # Get the username and password from the request
+        username = request.META.get('HTTP_USERNAME')
+        password = request.META.get('HTTP_PASSWORD')
+
+        # Authenticate the user with the provided credentials
+        user = authenticate(username=username, password=password)
+
+        # Check if the user is authenticated
+        if user is not None:
+            # Set the user as an attribute of the request object for easy access in the view
+            request.user = user
+            return view_func(request, *args, **kwargs)
+        else:
+            return HttpResponseForbidden('Invalid username or password')
+
+    return _wrapped_view
+
+
 
 
 def setdate(id:int):

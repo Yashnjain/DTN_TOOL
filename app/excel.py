@@ -20,15 +20,7 @@ def create_excel_file(location_prices : list,effective_date : str,path : str) ->
         ws["A2"].fill = yellow_fill
         
         temp = 3
-        # for record in location_prices:
-        #     location = f"{record['location']} {record['state']} Magellan"
-        #     set_cell(ws, f"A{row}", location, yellow_fill, Alignment(horizontal='left'))
-        #     set_cell(ws, f"B{row}", "Ethanol", None, Alignment(horizontal='left'))
-        #     set_cell(ws, f"A{row+1}", "PRICE", yellow_fill, Alignment(horizontal='left'))
-        #     set_cell(ws, f"B{row+1}", record["price"], yellow_fill, Alignment(horizontal='left'))
-        #     set_cell(ws, f"A{row+2}", "CHANGE", yellow_fill, Alignment(horizontal='left'))
-        #     set_cell(ws, f"B{row+2}", record["change"], yellow_fill, Alignment(horizontal='left'))
-        #     row += 4
+
         for record in location_prices:
             ws[f"A{temp}"] = record["location"] + " " + record["state"] + " " + "Magellan"
             ws[f"A{temp}"].alignment = Alignment(horizontal='left')

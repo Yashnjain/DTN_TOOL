@@ -1,35 +1,26 @@
 
-from django.shortcuts import render,redirect,reverse
-from django.shortcuts import render
-from django.http import HttpResponse,HttpResponseBadRequest,HttpResponseNotFound,FileResponse,Http404
-from django.views import View
-from app.models import Terminal, Customer, Product, Terminal_customer_mapping,Location_price,Cust_price,dtn_load,MyFile,metainfo
-from  datetime import date 
-from datetime import timedelta
-from datetime import datetime
-import pandas as pd
-from django.contrib.auth.decorators import login_required,permission_required,user_passes_test
-from django.db import transaction
-import csv
-from django.core.exceptions import PermissionDenied,ValidationError
-from django.contrib.auth.models import User,Group,GroupManager
-from django.core.mail import send_mail
-from app.mail import mail_send,location_price_mail,customer_mail
-from app.utils import *
-import logging
-import time
-import os
-from django.conf import settings
 import concurrent.futures
-from app.excel import create_excel_file
-import pandas as pd
+import csv
+import logging
+import os
 import threading
-# # from django_bulk_load import bulk_insert_models
-# # from django_bulk_load import bulk_update_models
-# import threading
-# import itertools
+import time
+from datetime import date, datetime, timedelta
 
+import pytz
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
+from django.http import (FileResponse, Http404, HttpResponse,
+                         HttpResponseBadRequest, HttpResponseNotFound)
+from django.shortcuts import redirect, render
 
+from app.excel import create_excel_file
+from app.mail import customer_mail, location_price_mail
+from app.models import (Cust_price, Location_price, MyFile,
+                        Terminal_customer_mapping, dtn_load, metainfo)
+from app.utils import *
+from .fpt import transfer_files
 
 
 @login_required(login_url="/accounts/microsoft/login")
@@ -90,14 +81,10 @@ def home(request,id = 0):
                     last_upload_timestamp = "error loading timestamp"
               
         
-        # getting the latest dtn upload No,else setting else false for insert case.
-        # try:
-        #     maxstatus = dtn_load.objects.filter(date= today).values("loadno").order_by("-loadno").first()["loadno"]
-        # except:
-        #     maxstatus = False
+  
         print(time.time(),"a")
-        last_week = date.today() - timedelta(days = 7)
-        #query fetching
+        last_week = date.today() - timedelta(days = 210)
+     
                 
         location_price_all  = list(Location_price.objects.select_related("location").filter(date__gt = last_week).values("id","location_id","date","price","price_dffernce","location__location"))
         cust_price_all = list(Cust_price.objects.filter(date__gt = last_week).values())
@@ -105,31 +92,7 @@ def home(request,id = 0):
         
         
         
-        #  Define a function to run the Location Price query
-        # def location_price_query():
-        #     location_price_all = Location_price.objects.select_related("location").filter(date__gt = last_week).values("id","location_id","date","price","price_dffernce","location__location")
-        #     return location_price_all
-
-        #  # Define a function to run the Cust Price query
-        # def cust_price_query():
-        #     cust_price_all = Cust_price.objects.filter(date__gt = last_week).values()
-        #     return cust_price_all
-
-        # # Define a function to run the Terminal Customer Mapping query
-        # def tcpmapping_query():
-        #     tcpmapping_all = Terminal_customer_mapping.objects.select_related('customer').values("id","Product_id","customer_id","location_id","status","customer__customer")
-        #     return tcpmapping_all
-        # print(time.time(),"b")
-        # with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-        #     # map each function to the executor and store the results
-        #     results = executor.map(lambda f: f(), [location_price_query,cust_price_query,tcpmapping_query])
-        # location_price_all,cust_price_all,tcpmapping_all = list(results)
-        ##########################################Get#################################################
-        # start_date = datetime.now().date() - timedelta(days=5)
-        # end_date = datetime.now().date()
-        # location_price_all  = Location_price.objects.select_related('location').filter(date_range = [start_date,end_date])
-        # cust_price_all = Cust_price.objects.objects.filter(date_range = [start_date,end_date])
-        # tcpmapping_all  = Terminal_customer_mapping.objects.select_related('customer')
+    
         
          
             
@@ -155,7 +118,7 @@ def home(request,id = 0):
                 
                    
             #locations_price_yesterday = location_price_all.filter(date = yesterday).values("location__location","date","price","price_dffernce","location")
-            locations_price_yesterday = get_location_price_by_date(location_price_all,yesterday)
+            locations_price_yesterdays = get_location_price_by_date(location_price_all,yesterday)
             
             #Get t date data 
             #locations_price_today = location_price_all.filter(date = today).values("location__location","date","price","price_dffernce","location")
@@ -194,19 +157,12 @@ def home(request,id = 0):
                         submit_active = True 
             
                 
-            #Adding Tth date price i.e New price
-            # def addtodayprice(location_price_yesterday):
-               
-            #     #print(location_price_yesterday["location"])
-            #     for location_price_today in locations_price_today:
-            #         if location_price_today["location"] == location_price_yesterday["location"]:          
-            #             return (location_price_today.get("price",0),location_price_today.get("price_dffernce",0))  
-            #         # return (0,0)
+
             print(time.time(),"e")
             location_and_customer = []
             cust_price_today_all_dict = get_today_cust_price_dict(cust_price_all,today)
             cust_price_yesterday_all_dict = get_today_cust_price_dict(cust_price_all,yesterday)
-            for location_price_yesterday in locations_price_yesterday:
+            for location_price_yesterday in locations_price_yesterdays:
                 # looping through all the location
                 # print("working")
                 location_result = {}
@@ -245,23 +201,15 @@ def home(request,id = 0):
                             customer_prices_yesterday = 0.0
                            
                             if locations_price_today: 
-                                # if cust_exits_on_date(cust_price_all,today,ctpm):   
-                                # if cust_price_all.filter(date = today,cust_term_prod_id = ctpm):
-                                    # customer_prices_yesterday = cust_price_all.filter(date = today,cust_term_prod_id = ctpm).values("price_variance")[0]
-                                # customer_prices_yesterday = get_cust_price_by_date(cust_price_today_all,ctpm)
+
                                 customer_prices_yesterday_dict = cust_price_today_all_dict.get(ctpm,0.0)
                                 if customer_prices_yesterday_dict:
                                     customer_prices_yesterday = customer_prices_yesterday_dict["price_variance"]
                                     customer_result["base_price"] = customer_prices_yesterday_dict["base_price"]
-                                    # base_price = customer_prices_yesterday["base_prices"]
                                 else:
                                    customer_prices_yesterday = 0.0
                                    customer_result["base_price"] = location_result["new_price"]
-                                    
-                                # else:
-                                #     # customer_prices_yesterday = cust_price_all.filter(date = yesterday,cust_term_prod_id = ctpm).values("price_variance")[0]  
-                                #     # customer_prices_yesterday = get_cust_price_by_date(cust_price_all,yesterday,ctpm)  
-                                #     customer_prices_yesterday = 0
+                          
                             else:
                                 customer_prices_yesterday = cust_price_yesterday_all_dict.get(ctpm,0.0)
                                 if customer_prices_yesterday:
@@ -269,11 +217,7 @@ def home(request,id = 0):
                                 
                         except:
                             customer_prices_yesterday = 0.0
-                        # try:
                         customer_result["price_variance"] = customer_prices_yesterday
-                       
-                        # except:
-                        #     customer_result["price_variance"] = 0 
                         customer_detail.append(customer_result)
                        
                     #end intial load    
@@ -309,7 +253,7 @@ def home(request,id = 0):
             total_time = end_time - start_time
             print(f"Total time taken: {total_time} seconds")
             
-            return render (request,"Home.html",context)
+            return render (request,"home.html",context)
         
         ###########################################Post################################################
         
@@ -537,74 +481,14 @@ def home(request,id = 0):
         #print(e)
         return HttpResponse ("Getting follwing {} error kindly check".format(e))
 
-# def strformat(string : str) -> str:
-#     # return "'{}'".format(s)
-#     return '\"{}\"'.format(string)
-    #return s
 
-
-    
-# def genrate_dtn_file(dtnlist : dict,dtncodedict : dict):  
-#     effective_date = date.today()
-#     effective_date = effective_date.strftime("%m/%d/%y")
-#     #print(effective_date)
-#     f = open("dtn_sample.csv",'w', newline='')
-#     c = csv.writer(f)
-#     response = HttpResponse(
-#         content_type='text/csv',
-#         headers={'Content-Disposition': 'attachment; filename="somefilename.csv"'},
-#     )
-#     c = csv.writer(response)
-#     data = []
-#     idpass = ["ABC1","URJA"]
-#     messagetype  =  ["PRF"]
-#     commandline = ["CO2","0001"," / / ","00:00","0000","1","0001","S","$"]
-#     dtncode = ['0008']
-#     begin = ["BEGIN-BINARY-DATA"]
-#     header = [strformat('HEADER'),"Customername"]
-#     detail_item = [strformat("PRICE"),"Terminal","statecode",strformat("MAG"),"Ethanol","product_price","change amount",effective_date,"00:01"]
-#     note  = [strformat("NOTE"),("FOR QUESTIONS PLEASE CONTACT 012-345-6789, DTN@example.com")]
-#     end = ["END-BINARY-DATA"]
-#     c.writerow(idpass)
-#     c.writerow(messagetype)
-#     i = 1
-#     for key,value in dtnlist.items():
-#         commandline[1] = "000{}".format(i)
-        
-#         c.writerow(commandline)
-#         dtncode[0] = dtncodedict[key]
-#         if "," in dtncode[0]:
-#             dtncode_list = dtncode[0].split(",")
-#             for i in dtncode_list:
-#                 c.writerow([i])
-#         else:        
-#             c.writerow(dtncode)
-#         c.writerow(begin)
-#         header[1] = strformat(key)
-#         c.writerow(header)
-#         for lp  in value:
-            
-#             detail_item[1] = strformat(lp["location"])
-#             detail_item[2] = strformat(lp["state"])
-#             detail_item[5] = format(float(lp["price"]),".4f")
-#             detail_item[6] = format(float(lp["change"]),".4f")
-#             if float(detail_item[6]) > 0:
-#                 detail_item[6] = f"+{detail_item[6]}"
-#             c.writerow(detail_item)
-           
-#             #print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++==")
-#             #print(lp["location"],key)
-#         c.writerow(note)
-#         c.writerow(end)
-#     return response    
-#     f.close()
         
 def download_file(request,id):
     try:
         file_name = MyFile.objects.filter(id =id).values("file").first()["file"]
         file_path = os.path.join(settings.MEDIA_ROOT,"files",file_name)
         if os.path.exists(file_path):
-            response = FileResponse(open(file_path,"rb"),filename = "dtn.csv")
+            response = FileResponse(open(file_path,"rb"),filename = f"Dtn_{file_name}")
             return response
         else:
             raise Http404
@@ -623,7 +507,6 @@ def filter_files(request):
 
 
 def fetch_dtn_file_data(id,for_date):
-    
     today = date.today()
     try:
         
@@ -631,7 +514,7 @@ def fetch_dtn_file_data(id,for_date):
         dtn = {}
         supplier_email = {}
         dtn_mail = {}
-        last_week = date.today() - timedelta(days = 4)
+        last_week = date.today() - timedelta(days = 200)
         cps_all = Cust_price.objects.filter(date__gt = last_week).values()
         location_price_all  = Location_price.objects.select_related("location").filter(date__gt = last_week).values("id","location_id","date","price","price_dffernce","location__location","location_id__state")
         tcpmapping_all  = Terminal_customer_mapping.objects.select_related('customer').values("id","location_id","status","customer__customer","customer__dtn","customer_id",'customer__send_format','customer__mail_list_to','customer__mail_list_bcc')
@@ -657,21 +540,7 @@ def fetch_dtn_file_data(id,for_date):
             else:     
                 cps = dtn_load_all_cust_price(cps_all,for_date)
                 
-            
-        # try:
-        #     dtn_load_status = dtn_load.objects.filter(date = for_date).order_by("-loadno").values("loadno").first()["loadno"]
-        #   #  dtn_load_status =  dtn_load.objects.filter(date= for_date).values("loadno").order_by("-loadno").first()["load_no"]
-        # except:
-        #     dtn_load_status = False
-        # if dtn_load_status:
-        #     cps = Cust_price.objects.filter(date = for_date,status = (dtn_load_status + 1) ).values()
-        # else:     
-        #     cps = Cust_price.objects.filter(date = for_date).values()
-        # last_week = date.today() - timedelta(days = 7)
-        # location_price_all  = Location_price.objects.select_related("location").filter(date__gt = last_week).values("id","location_id","date","price","price_dffernce","location__location","location_id__state")
-        # # cust_price_all = Cust_price.objects.filter(date__gt = last_week).values()
-        # tcpmapping_all  = Terminal_customer_mapping.objects.select_related('customer').values("id","location_id","status","customer__customer","customer__dtn")
-        ## For DTN subscriber
+        #for DTN format
         if cps:
             for cp in cps:
                 
@@ -769,6 +638,12 @@ def fetch_dtn_file_data(id,for_date):
 @login_required(login_url="/accounts/microsoft/login")
 @authorisation
 def load_data_to_dtn(request,id = 0):
+    timezone = pytz.timezone('US/Central')
+    if datetime.now(timezone).hour < 4:
+        if id==1:
+            return redirect("homeid",1)
+        else:
+            return redirect("home")
     
     for_date = None
     if id == 0:
@@ -781,124 +656,102 @@ def load_data_to_dtn(request,id = 0):
         return HttpResponseNotFound    
     try:  
         dtnlist,dtncodedict,dtnlist_email,mail_list = fetch_dtn_file_data(id,for_date)
-        ######################################
+        ###################################### FILE CREATION ################################################## 
         if id == 0:
             effective_date = date.today() + timedelta(days=1)
             effective_date = effective_date.strftime("%m/%d/%y")
+            effective_time = '00:01'
         elif id == 1:
             effective_date = date.today()
             effective_date = effective_date.strftime("%m/%d/%y")
-        #print(effective_date)
-        
-        response = HttpResponse(
-            content_type='text/csv',
-            headers={'Content-Disposition': 'attachment; filename="Dtnfile.csv"'},
-            
-        )
-        c = csv.writer(response,delimiter=',',
-                lineterminator='\r\n',
-                quotechar = "'",quoting=csv.QUOTE_MINIMAL)
-        # c = csv.writer(response,doublequote=True,quoting=csv.QUOTE_NONNUMERIC, quotechar='"',delimiter= ",")
-        idpass = ["BUR1","URJA"]
-        messagetype  =  ["PRF"]
-        commandline = ["C02","0001"," / / ","00:00","0000","1","0001","S","$"]
-        dtncode = ['0008']
-        begin = ["BEGIN-BINARY-DATA"]
-        header = [strformat("HEADER"),strformat(str("BioUrja Trading LLC"))]
-        # detail_item = [strformat("PRICE"),"Terminal","statecode",strformat("Magellan"),"Ethanol","product_price","change amount",effective_date,"00:01"]
-        detail_item = [strformat("PRICE"),"Terminal","statecode",strformat("Magellan"),strformat("Ethanol"),"product_price","",effective_date,"00:01"]
-        note  = [strformat("NOTE"),strformat("FOR QUESTIONS PLEASE CONTACT 012-345-6789  DTN@example.com")]
-        end = ["END-BINARY-DATA"]
-        c.writerow(idpass)
-        c.writerow(messagetype)
-        seq = 1
-        for key,value in dtnlist.items():
-            commandline[1] = str(seq).zfill(4)
-            
-            c.writerow(commandline)
-            dtncode[0] = dtncodedict[key]
-            if "," in dtncode[0]:
-                dtncode_list = dtncode[0].split(",")
-                c.writerow(dtncode_list)
-                for i in dtncode_list:
-                    pass
-                    
-            else:        
-                c.writerow(dtncode)
-            c.writerow(begin)
-            # for getting coustomer 
-            # header[1] = strformat(key)  
-            note[1] = strformat(key)
-            c.writerow(header)
-            for lp  in value:
+            effective_time = datetime.now(timezone).strftime("%H:%M")
+        if dtnlist:
+            #print(effective_date)
+            response = HttpResponse(
+                content_type='text/csv',
+                headers={'Content-Disposition': 'attachment; filename="Dtnfile.csv"'},
                 
-                detail_item[1] = strformat(lp["location"])
-                detail_item[2] = strformat(lp["state"])
-                detail_item[5] = float(format(float(lp["price"]),".4f"))
-                # change comment 
-                # detail_item[6] = format(float(lp["change"]),".4f")
-                # if float(detail_item[6]) > 0:
-                #     detail_item[6] = f"+{detail_item[6]}"
-                c.writerow(detail_item)
-            c.writerow(note)
-            c.writerow(end) 
-            seq = seq + 1       
-        timestamp = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-        filename = "{}.csv".format(timestamp)
-        file_path = os.path.join(settings.MEDIA_ROOT,"files",filename)
-        try:
-            with open(file_path, 'w',newline='') as f:
-                f.write(response.content.decode('utf-8'))
-                # f.write(response.content.decode('utf-8-sig'))        
-        except:
-            raise Http404
-        else:
-            try: 
-                check_version = MyFile.objects.filter(created_at__date = date.today(),day_id = id).values("version").order_by("-version").first()["version"]
-                MyFile.objects.create(name = timestamp,file = filename,version = check_version + 1,day_id = id)
-            except:
-                MyFile.objects.create(name = timestamp,file = filename,day_id = id)
-        
-        def mass_mail():
+            )
+            c = csv.writer(response,delimiter=',',
+                    lineterminator='\r\n',
+                    quotechar = "'",quoting=csv.QUOTE_MINIMAL)
+            # c = csv.writer(response,doublequote=True,quoting=csv.QUOTE_NONNUMERIC, quotechar='"',delimiter= ",")
+            idpass = ["BUR1","URJA"]
+            messagetype  =  ["PRF"]
+            commandline = ["C02","0001","  /  /  ","00:00","0000","1","0001","S","$"]
+            dtncode = ['0008']
+            begin = ["BEGIN-BINARY-DATA"]
+            header = [strformat("HEADER"),strformat(str("BioUrja Trading LLC"))]
+            # detail_item = [strformat("PRICE"),"Terminal","statecode",strformat("Magellan"),"Ethanol","product_price","change amount",effective_date,"00:01"]
+            detail_item = [strformat("PRICE"),"Terminal","statecode",strformat("Magellan"),strformat("Ethanol"),"product_price","",effective_date,effective_time]
+            note  = [strformat("NOTE"),strformat("FOR QUESTIONS PLEASE CONTACT 012-345-6789  DTN@example.com")]
+            end = ["END-BINARY-DATA"]
+            eof = ["<!--END OF FILE-->"]
+            c.writerow(idpass)
+            c.writerow(messagetype)
+            seq = 1
+            for key,value in dtnlist.items():
+                commandline[1] = str(seq).zfill(4)
+                c.writerow(commandline)
+                dtncode[0] = dtncodedict[key]
+                if "," in dtncode[0]:
+                    dtncode_list = dtncode[0].split(",")
+                    c.writerow(dtncode_list)              
+                else:        
+                    c.writerow(dtncode)
+                c.writerow(begin)
+                note[1] = strformat(key)
+                c.writerow(header)
+                for lp  in value:
+                    detail_item[1] = strformat(lp["location"])
+                    detail_item[2] = strformat(lp["state"])
+                    detail_item[5] = (format((lp["price"]),".4f"))
+                    c.writerow(detail_item)
+                c.writerow(note)
+                c.writerow(end) 
+                seq = seq + 1       
+            c.writerow(eof)
+            timestamp = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+            filename = "{}.csv".format(timestamp)
+            file_path = os.path.join(settings.MEDIA_ROOT,"files",filename)
             try:
-                for key,value in dtnlist_email.items():
-                    path = os.path.join(settings.MEDIA_ROOT,"files_mail",f"BioUrja_Magellan_Price_{key}_{str(date.today())}.xlsx")
-                    create_excel_file(location_prices=value,effective_date=effective_date,path = path)
-                    subject = f"BioUrja Trading - Magellan Price for {str(date.today())}"
-                    body = f"BioUrja_Magellan_Price_{key}_{str(date.today())}"
-                    customer_mail(subject,body,path,to=mail_list[key][0].split(','),bcc = mail_list[key][1].split(',') )
-                dtn_load_update(id)    
-                if id == 1:
-                    location_price_mail(date.today() - timedelta(days=1))
-                else:
-                    location_price_mail(date.today())
-            except Exception as e:
-                raise Exception (e)
-        thread = threading.Thread(target=mass_mail)    
-        thread.start()
-        # dtn_load_update(id)
-        # if id == 1:
-        #    location_price_mail(date.today() - timedelta(days=1))
-        # else:
-        #     location_price_mail(date.today())
-            
+                with open(file_path, 'w',newline='') as f:
+                    f.write(response.content.decode('utf-8'))
+                    # f.write(response.content.decode('utf-8-sig'))        
+            except:
+                raise Http404
+            else:
+                try: 
+                    check_version = MyFile.objects.filter(created_at__date = date.today(),day_id = id).values("version").order_by("-version").first()["version"]
+                    MyFile.objects.create(name = timestamp,file = filename,version = check_version + 1,day_id = id)
+                except:
+                    MyFile.objects.create(name = timestamp,file = filename,day_id = id)
+            transfer_files(file_path)       
+        if dtnlist_email:  
+            def mass_mail():
+                try:
+                    for key,value in dtnlist_email.items():
+                        path = os.path.join(settings.MEDIA_ROOT,"files_mail",f"BioUrja_Magellan_Price_{key}_{str(date.today())}.xlsx")
+                        create_excel_file(location_prices=value,effective_date=effective_date,path = path)
+                        subject = f"BioUrja Trading - Magellan Price for {str(date.today())}"
+                        body = f"BioUrja_Magellan_Price_{key}_{str(date.today())}"
+                        if mail_list[key][0] and mail_list[key][1]:
+                            customer_mail(subject,body,path,to=mail_list[key][0].split(','),bcc = mail_list[key][1].split(',') )
+                    dtn_load_update(id)    
+                    if id == 1:
+                        location_price_mail(date.today() - timedelta(days=1))
+                    else:
+                        location_price_mail(date.today())
+                except Exception as e:
+                    raise Exception (e)
+                
+            thread = threading.Thread(target=mass_mail)    
+            thread.start()
         if id==1:
             return redirect("homeid",1)
         else:
             return redirect("home")
-        # return response
 
-        # #creating dictionary for DTN file
-       
-        # #FTP code
-
-        # return response
-        # if id == 0:
-        #     return redirect ("home")
-        # elif id == 1:
-        #     return redirect("homeid",1)
-        # else:
-        #     return HttpResponseNotFound
     except Exception as e:
         return HttpResponse ("Following error occured during excecution{}".format(e))
    

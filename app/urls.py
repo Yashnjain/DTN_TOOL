@@ -16,8 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from .views import home,fetch_dtn_file_data,load_data_to_dtn,download_file,filter_files
-from .views_csvresponse import getfiledetail
 from .views_delete import reset_today_price
+from .views_sheduler import sheduler
+from .view_accounts import download_csv
+from .sap import push_to_sap
 
 urlpatterns = [ 
     path("",home,name = "home"),
@@ -26,9 +28,12 @@ urlpatterns = [
     path("submit/<int:id>",load_data_to_dtn ,name = "dtnload"),
     path("file",fetch_dtn_file_data),
     path("reset",reset_today_price),
-    path("csv",getfiledetail),
     path("get/<int:id>",download_file),
-    path("files",filter_files)
+    path("files",filter_files),
+    path("send",sheduler),
+    path('download-csv/<str:current_date>/', download_csv ),
+    path('download-csv', download_csv),
+    path('sap',push_to_sap)
 ]
   
 

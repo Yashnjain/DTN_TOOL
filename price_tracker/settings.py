@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 
 
-
-
 from pathlib import Path
 import os
 
@@ -105,7 +103,6 @@ WSGI_APPLICATION = 'price_tracker.wsgi.application'
 
 
 # Prod ENV
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -156,18 +153,22 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
 # TIME_ZONE = 'UTC'
-TIME_ZONE = 'America/Chicago'
+
+TIME_ZONE = 'US/Central'
+
+# TIME_ZONE = 'UTC-5'
 
 USE_I18N = True
 
-USE_TZ = True
-
+USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
@@ -228,6 +229,7 @@ EMAIL_HOST_USER = "prism.support@biourja.com"
 EMAIL_HOST_PASSWORD = "Chirag0987"
 
 ACCOUNT_EMAIL_VERIFICATION = "none"
+
 
 
 #dev

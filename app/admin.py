@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib import admin
 from django.forms.models import BaseInlineFormSet
-from .models import Terminal, Customer, Product, Terminal_customer_mapping,Location_price,Cust_price,useraccess,MyFile,dtn_load
+from .models import Terminal, Customer, Product, Terminal_customer_mapping,Location_price,Cust_price,useraccess,MyFile,dtn_load,MetaData
 from  datetime import date
 from datetime import timedelta
 
@@ -9,8 +9,7 @@ from datetime import timedelta
 day = 1
 
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ['customer','cust_status','customer_code','company','send_format','dtn','mail_list_to','mail_list_bcc']
-    list_filter = ["customer"]
+    list_display = ['customer','cust_status','customer_code','company','send_format','sap','dtn','mail_list_to','mail_list_bcc']
     list_filter = ['send_format','customer']
     def save_model(self, request, obj, form, change):
         # First, save the customer object
@@ -56,8 +55,8 @@ class Location_priceAdmin(admin.ModelAdmin):
     list_filter = ["date"]
 
 class Terminal_customer_mappingAdmin(admin.ModelAdmin):
-    list_display = ["customer","location","Product","status"]
-    list_filter = ["customer","location","Product","status"]
+    list_display = ["customer","location","Product","status","rack"]
+    list_filter = ["customer","location","Product","status","rack"]
 
 
 class Cust_priceAdmin(admin.ModelAdmin):
@@ -73,6 +72,10 @@ class useraccessAdmin(admin.ModelAdmin):
     list_display = ["email","email_trigger"]
     list_filter = ["email"]
 
+
+class MetaDataAdmin(admin.ModelAdmin):
+    list_display = ["key"]  
+
 admin.site.register(Customer, CustomerAdmin)
 admin.site.register(Terminal_customer_mapping,Terminal_customer_mappingAdmin)
 admin.site.register(Terminal,TerminalAdmin)
@@ -81,6 +84,8 @@ admin.site.register(Cust_price,Cust_priceAdmin)
 admin.site.register(Product)
 admin.site.register(useraccess,useraccessAdmin)
 admin.site.register(MyFile)
+admin.site.register(MetaData,MetaDataAdmin)
 admin.site.register(dtn_load,dtn_loadAdmin)
+
 
 

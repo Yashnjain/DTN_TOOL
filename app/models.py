@@ -13,6 +13,7 @@ class Terminal(models.Model):
     state = models.CharField(max_length=10,choices= us_state_abbrev)
     location_status = models.BooleanField(default=False)
     location_code = models.CharField(max_length=100,blank=True,null=True)
+    
 
     def __str__(self) -> str:
         return self.location
@@ -30,8 +31,8 @@ class Customer(models.Model):
     mail_list_bcc = models.CharField(max_length=1000,blank=True,null=True)
     company = models.CharField(max_length=100,blank=True,null=True)
     customer_code = models.CharField(max_length=100,blank=True,null=True)
-    # DTN = 0
-    # Mail = 1
+    sap = models.BooleanField(default=False)
+   
     
     def __str__(self) -> str:
         return self.customer
@@ -49,7 +50,7 @@ class Terminal_customer_mapping(models.Model):
     location = models.ForeignKey(Terminal,on_delete=models.CASCADE)
     Product =  models.ForeignKey(Product,on_delete=models.CASCADE)
     status = models.BooleanField(default=False)
-
+    rack = models.BooleanField(default=False)
     def __str__(self) -> str:
         return "{}-{}-{}".format(self.Product,self.location,self.customer)
 
@@ -81,6 +82,7 @@ class Cust_price(models.Model):
     base_price = models.FloatField()
     Final_price = models.FloatField()
     status = models.IntegerField(default=0)
+    
     
 
     
@@ -118,12 +120,18 @@ class MyFile(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     version = models.IntegerField(default=1)
     day_id = models.IntegerField()
-
     class Meta:
         unique_together = ('name', 'version','created_at')
 
     def __str__(self) -> str:
         return self.name
+    
+
+class MetaData(models.Model):
+    key = models.CharField(max_length=20)
+    value = models.JSONField()
+    
+
 #Add user to group while new user signup
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):  

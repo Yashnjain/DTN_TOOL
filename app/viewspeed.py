@@ -480,15 +480,7 @@ def fetch_dtn_file_data(id,for_date):
             else:     
                 cps = Cust_price.objects.filter(date = for_date).values()   
             
-        # try:
-        #     dtn_load_status = dtn_load.objects.filter(date = for_date).order_by("-loadno").values("loadno").first()["loadno"]
-        #   #  dtn_load_status =  dtn_load.objects.filter(date= for_date).values("loadno").order_by("-loadno").first()["load_no"]
-        # except:
-        #     dtn_load_status = False
-        # if dtn_load_status:
-        #     cps = Cust_price.objects.filter(date = for_date,status = (dtn_load_status + 1) ).values()
-        # else:     
-        #     cps = Cust_price.objects.filter(date = for_date).values()
+
         if cps:
             for cp in cps:
                 

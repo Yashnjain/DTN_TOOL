@@ -2,12 +2,12 @@ from django.core.mail import send_mail
 from .models import Location_price
 import pandas as pd
 from datetime import date 
-from django.contrib.sessions.models import Session
-from django.core import mail
 from django.core.mail import EmailMessage
-from django.contrib.sites.models import Site
+from app.models import MetaData
+
+
 def mail_send():
-    send_mail("TEST","THis is a test","itdevsupport@biourja.com",["rahul.sakarde@gmail.com.com"],fail_silently=False)
+    send_mail("TEST","THis is a test","prism.support@biourja.com",["rahul.sakarde@biourja.com","sanskar.gupta@biourja.com"],fail_silently=False)
     
  
 
@@ -19,9 +19,6 @@ def location_price_mail(date = date.today()):
     else:
         try:    
             df = pd.DataFrame(l_price)
-            # df.columns = ["Commodity","price"]
-            # df = df.reset_index(drop=True)
-            # html =  df.to_html()  
             css = """<style>
                         .class_td_h{
                             background-color:lightgreen;padding:0.75pt;border-style:none solid none none;border-right-width:1pt;border-right-color:black; text-align: center;
@@ -61,9 +58,10 @@ def location_price_mail(date = date.today()):
         except Exception as e:
             raise Exception ("Getting Error while performaing pandas operations {}".format(e))      
         else :
+            metadata = MetaData.objects.get(key="INTERNAL_MAIL_LIST") 
             subject = "MarketData Publisher Service Notification For - {}".format(date)
             from_email = "prism.support@biourja.com"
-            recipient_list = ["rahul.sakarde@biourja.com"]
+            recipient_list = metadata.value.get('mail')
             fail_silently = False
             html_message = html
             try:
@@ -76,9 +74,11 @@ def location_price_mail(date = date.today()):
             
             
 def customer_mail(subject,body,path,to = ["rahul.sakarde@biourja.com"],bcc =["rahul.sakarde@biourja.com"]):
-   email = EmailMessage(subject= subject,body=body,from_email='prism.support@biourja.com',to=to,bcc=bcc)
-   email.attach_file(path)
-   email.send()
-   
+    try:
+        email = EmailMessage(subject= subject,body=body,from_email='prism.support@biourja.com',to=to,bcc=bcc)
+        email.attach_file(path)
+        email.send()
+    except:
+        pass
    
    
