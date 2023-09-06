@@ -11,4 +11,6 @@ whitenoise==6.3.0
 python-dotenv
 openpyxl
 ftputil
+azure-storage-blob
+
 

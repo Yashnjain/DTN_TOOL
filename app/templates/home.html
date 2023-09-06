@@ -20,7 +20,7 @@
         href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&family=Noto+Serif:wght@700&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="/static/home_0301.css">
+    <link rel="stylesheet" href="/static/home.css">
 
     <link rel="icon" type="image/x-icon" href="https://www.biourja.com/wp-content/uploads/Favicon_Favicon.png">
 
@@ -64,7 +64,7 @@
 
             <div class="header-right">
                 <div class="user-info" style="padding-top: 20px;">
-                    <img src="https://i1.wp.com/wilcity.com/wp-content/uploads/2020/06/115-1150152_default-profile-picture-avatar-png-green.jpg?fit=820%2C860&ssl=1"
+                    <img src="/static/profile_pic.webp"
                         alt="User Logo" style="border-color: white; margin-bottom: 10px;">
                     <p>{{request.user}}</p>
                 </div>
@@ -131,17 +131,13 @@
                 <input class="btn btn-secondary  cust-btn btn-load" type="submit" value="View Files" href="/files"
                 onclick="checkSet2(event, this.form)">
             </form>
-            <!-- <form action='/Retrive' method="get" style="display:inline">
-                <input class="btn btn-secondary  cust-btn btn-load" type="submit" value="Retrive Data" href="/files"
-                onclick="checkSet2(event, this.form)">
-            </form> -->
 
             <div class="abc1">
                 <form method="post" id="signout" action="/accounts/logout/">
                     {% csrf_token %}
                     <a class="button1" onclick="logoutFun()"
                         style="padding:5px; border-top-left-radius: 10px; border-bottom-left-radius: 10px;">
-                        <img src="data:image/jpeg;base64,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"
+                        <img src="/static/log_out_btn.jpg"
                             style="width: 25px;
                         border-radius: 50px;
                         float: left;">
@@ -199,16 +195,12 @@
                                     {{l.yesterday_price|add_floats:l.price_diff}}</td>
                                 {% endif %}
 
-
-
-                                
                                 <td>
 
                                     {% if active %}
-                                    <input class="diffText moveFocusDown" type="text" id={{"diff"|add:l.location_id}}
-                                        value={{l.price_diff}} name={{"L"|add:l.location_id}} data={{l.price_diff}}
-                                        oninput="AutoCalc(this); checkDecimal(this); " onblur="checkOver(this)"
-                                        onfocus="setField(this)">
+                                    <input class="diffText moveFocusDown move_using_arrow" type="text" id={{"diff"|add:l.location_id}}
+                                        value={{l.price_diff}} name={{"L"|add:l.location_id}} data={{l.price_diff}}  
+                                        oninput="AutoCalc(this); checkDecimal(this); " onblur="checkOver(this)"  onfocus="setField(this)">
                                     {% else %}
                                     <input class="diffText  read-only" type="text" id={{"diff"|add:l.location_id}}
                                         value={{l.price_diff}} name={{"L"|add:l.location_id}} data={{l.price_diff}}
@@ -219,8 +211,6 @@
                                 </td>
 
                             </div>
-
-
 
                             <!--------------------------Status Column------------------- -->
                             {% if dtnloadsubmit %}
@@ -243,15 +233,18 @@
                                     <div class="cust-p-container"
                                         style="display: flex; justify-content:center; align-items: center;">
 
-                                        <input class="form-check-input-inline" type="checkbox" id={{"C"|add:c.ctpm}}
+                                        <input class="form-check-input-inline" type="checkbox" id={{"C"|add:c.ctpm}} loc="{{ l.location_name }}" cust="{{ c.customer_name }}"
                                             checked onclick="isEnable(this)"
                                             style="margin-right: 3px; display: block-inline; padding-right: 5px;"
-                                            name={{"C"|add:c.ctpm}}>
+                                            name={{"C"|add:c.ctpm}}  >
 
                                         <div class="input-group">
 
-                                            <input type="text" id={{"P"|add:c.ctpm}} class="cust-inp"
-                                                value={{c.price_variance}} name={{"P"|add:c.ctpm}}
+                                            <!-- <input type="text" id={{"P"|add:c.ctpm}} class="cust-inp moveCellDown"
+                                                value={{c.price_variance}} name={{"P"|add:c.ctpm}}  data-row="{{forloop.index}}" 
+                                                oninput="checkDecimal(this)" onload="checkover2(this.id);" onblur="checkover2(this.id);" /> -->
+                                            <input type="text" id={{"P"|add:c.ctpm}} class="cust-inp moveCellDown"
+                                                value={{c.price_variance}} name={{"P"|add:c.ctpm}} onkeydown="handleArrowKeys(event, this)" data-row="{{forloop.index}}" 
                                                 oninput="checkDecimal(this)" onload="checkover2(this.id);" onblur="checkover2(this.id);" />
                                             <div class="input-buttons" style="margin-right: 3px;">
                                                 <button type="button" class="plus" id={{"ADD"|add:c.ctpm}}
@@ -277,7 +270,6 @@
                                         {% else %}
                                         {% endif %}
                                     </div>
-                                   
 
                                     {% else %}
                                     <div class="cust-p-container"
@@ -285,15 +277,18 @@
 
 
                                         <input class="form-check-input-inline" type="checkbox" id={{"C"|add:c.ctpm}}
-                                            unchecked onclick="isEnable(this)"
+                                            unchecked onclick="isEnable(this)" loc="{{ l.location_name }}" cust="{{ c.customer_name }}"
                                             style="margin-right: 3px; display: block-inline; padding-right: 5px;"
                                             name={{"C"|add:c.ctpm}}>
 
                                         <div class="input-group">
 
-                                            <input type="text" id={{"P"|add:c.ctpm}} class="cust-inp"
-                                                value={{c.price_variance}} name={{"P"|add:c.ctpm}}
-                                                oninput="checkDecimal(this)" disabled onload="checkover2(this.id);" onblur="checkover2(this.id);" />
+                                            <!-- <input type="text" id={{"P"|add:c.ctpm}} class="cust-inp moveCellDown" 
+                                                value={{c.price_variance}} name={{"P"|add:c.ctpm}}  data-row="{{forloop.index}}"
+                                                oninput="checkDecimal(this)" disabled onload="checkover2(this.id);" onblur="checkover2(this.id);"  /> -->
+                                            <input type="text" id={{"P"|add:c.ctpm}} class="cust-inp moveCellDown" 
+                                                value={{c.price_variance}} name={{"P"|add:c.ctpm}} onkeydown="handleArrowKeys(event, this)" data-row="{{forloop.index}}"
+                                                oninput="checkDecimal(this)" disabled onload="checkover2(this.id);" onblur="checkover2(this.id);"  />
                                             <div class="input-buttons" style="margin-right: 3px;">
                                                 <button type="button" class="plus" id={{"ADD"|add:c.ctpm}}
                                                     onclick="increaseValue({{c.ctpm}})"></button>

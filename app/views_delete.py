@@ -1,8 +1,14 @@
 from django.http import HttpResponse
 from django.db import connection
 from datetime import date
+from django.contrib.auth.decorators import login_required
+from app.utils import authorisation
 
 
+
+
+@login_required(login_url="/accounts/microsoft/login")
+@authorisation
 def reset_today_price(request):
     try:
         cursor = connection.cursor()

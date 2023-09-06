@@ -3,3 +3,4 @@ sql.log
 .vscode
 app/__pycache__/
 db.sqlite
+price_tracker/__pycache__/

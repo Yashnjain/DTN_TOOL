@@ -1,13 +1,13 @@
 from openpyxl import Workbook
 from openpyxl.styles import PatternFill,Alignment
-
+from .blob import upload_blob
 
 def set_cell(ws, cell, value, fill, alignment):
     ws[cell] = value
     ws[cell].fill = fill
     ws[cell].alignment = alignment
 
-def create_excel_file(location_prices : list,effective_date : str,path : str) -> None:
+def create_excel_file(location_prices : list,effective_date : str,path : str,effective_time : str) -> None:
     try:
         wb = Workbook()
         ws = wb.active
@@ -15,7 +15,7 @@ def create_excel_file(location_prices : list,effective_date : str,path : str) ->
         yellow_fill = PatternFill (start_color='00FFFF00', end_color='00FFFF00', fill_type='solid')
         ws["A1"] = "BioUrja Trading, LLC"
         ws["A1"].alignment = Alignment(horizontal='left')
-        ws["A2"] = effective_date + "00:01"
+        ws["A2"] = effective_date + " " + effective_time
         ws["A2"].alignment = Alignment(horizontal='left')
         ws["A2"].fill = yellow_fill
         
@@ -51,6 +51,7 @@ def create_excel_file(location_prices : list,effective_date : str,path : str) ->
         # ws[f"A{temp + 1}"] = "<!--END OF FILE-->"   
         # ws[f"A{temp + 1}"].alignment = Alignment(horizontal='left')
         wb.save(path)
+        upload_blob(path)
     except Exception as e:
         raise Exception (f"Exception during Excel creation {e}")    
     

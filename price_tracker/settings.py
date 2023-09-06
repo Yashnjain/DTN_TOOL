@@ -103,32 +103,32 @@ WSGI_APPLICATION = 'price_tracker.wsgi.application'
 
 
 # Prod ENV
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ['DBNAME'],
-        'HOST': os.environ['DBHOST'],
-        'USER': os.environ['DBUSER'],
-        'PASSWORD': os.environ['DBPASS'],
-        'CONN_MAX_AGE' : 600
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.environ['DBNAME'],
+#         'HOST': os.environ['DBHOST'],
+#         'USER': os.environ['DBUSER'],
+#         'PASSWORD': os.environ['DBPASS'],
+#         'CONN_MAX_AGE' : 600
+#     }
+# }
 
 
 
 
 
 # Prod Database
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'dtnprice-database_dev',
-#         'HOST': 'bio-dtn.postgres.database.azure.com',
-#         'USER': 'biodtnadmin01',
-#         'PASSWORD': 'wVRZP7mfd78*gRChPDgVbQf@cavP',
-#         'CONN_MAX_AGE': 300
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'dtnprice-database_dev',
+        'HOST': 'bio-dtn.postgres.database.azure.com',
+        'USER': 'biodtnadmin01',
+        'PASSWORD': 'wVRZP7mfd78*gRChPDgVbQf@cavP',
+        'CONN_MAX_AGE': 300
+    }
+}
 
 
 
@@ -233,8 +233,8 @@ ACCOUNT_EMAIL_VERIFICATION = "none"
 
 
 #dev
-# SECURE_PROXY_SSL_HEADER = None
-# SECURE_SSL_REDIRECT = False
+SECURE_PROXY_SSL_HEADER = None
+SECURE_SSL_REDIRECT = False
 
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 100000000
@@ -245,28 +245,28 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 100000000
 
 
 #prod
-CSRF_TRUSTED_ORIGINS = ["https://dtnpriceupload.azurewebsites.net"]
-CSRF_COOKIE_SECURE = False
-SECURE_SSL_REDIRECT = True
-SECURE_PROXY_SSL_HEADER =('HTTP_X_FORWARDED_PROTO','https')
-SOCIALACCOUNT_AUTO_SIGNUP = False
+# CSRF_TRUSTED_ORIGINS = ["https://dtnpriceupload.azurewebsites.net"]
+# CSRF_COOKIE_SECURE = False
+# SECURE_SSL_REDIRECT = True
+# SECURE_PROXY_SSL_HEADER =('HTTP_X_FORWARDED_PROTO','https')
+# SOCIALACCOUNT_AUTO_SIGNUP = False
 
 
 
 #dev
-# STATICFILES_DIRS = [
-#     BASE_DIR,"static"
-# ]
-# STATIC_URL = 'static/'
-# DEBUG = True
+STATICFILES_DIRS = [
+    BASE_DIR,"static"
+]
+STATIC_URL = 'static/'
+DEBUG = True
 
 
 
 # prod
-DEBUG = False
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# DEBUG = False
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# STATIC_URL = '/static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 
 
@@ -302,5 +302,10 @@ LOGGING = {
         },
     },
 }
+
+
+
+
+
 
 

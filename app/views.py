@@ -6,7 +6,6 @@ import os
 import threading
 import time
 from datetime import date, datetime, timedelta
-
 import pytz
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -14,13 +13,14 @@ from django.core.exceptions import ValidationError
 from django.http import (FileResponse, Http404, HttpResponse,
                          HttpResponseBadRequest, HttpResponseNotFound)
 from django.shortcuts import redirect, render
-
 from app.excel import create_excel_file
 from app.mail import customer_mail, location_price_mail
 from app.models import (Cust_price, Location_price, MyFile,
                         Terminal_customer_mapping, dtn_load, metainfo)
 from app.utils import *
 from .fpt import transfer_files
+from .blob import upload_blob,download_blob
+
 
 
 @login_required(login_url="/accounts/microsoft/login")
@@ -491,11 +491,15 @@ def download_file(request,id):
             response = FileResponse(open(file_path,"rb"),filename = f"Dtn_{file_name}")
             return response
         else:
+            download_blob(file_name)
+            if os.path.exists(file_path):
+                response = FileResponse(open(file_path,"rb"),filename = f"Dtn_{file_name}")
+                return response
             raise Http404
     except:
         raise Http404
             
-    
+  
     
 def filter_files(request):
     selected_date = request.GET.get('date')
@@ -639,16 +643,9 @@ def fetch_dtn_file_data(id,for_date):
 @authorisation
 def load_data_to_dtn(request,id = 0):
     timezone = pytz.timezone('US/Central')
-    if datetime.now(timezone).hour < 4:
-        if id==1:
-            return redirect("homeid",1)
-        else:
-            return redirect("home")
-    
     for_date = None
     if id == 0:
         for_date = date.today() 
-        
     elif id == 1 :
         #print("yesterday")
         for_date = date.today() - timedelta(days=1)
@@ -665,6 +662,7 @@ def load_data_to_dtn(request,id = 0):
             effective_date = date.today()
             effective_date = effective_date.strftime("%m/%d/%y")
             effective_time = datetime.now(timezone).strftime("%H:%M")
+        update = False
         if dtnlist:
             #print(effective_date)
             response = HttpResponse(
@@ -726,27 +724,33 @@ def load_data_to_dtn(request,id = 0):
                     MyFile.objects.create(name = timestamp,file = filename,version = check_version + 1,day_id = id)
                 except:
                     MyFile.objects.create(name = timestamp,file = filename,day_id = id)
-            transfer_files(file_path)       
+            transfer_files(file_path)    
+            upload_blob(file_path)
+            update = True
         if dtnlist_email:  
             def mass_mail():
                 try:
                     for key,value in dtnlist_email.items():
-                        path = os.path.join(settings.MEDIA_ROOT,"files_mail",f"BioUrja_Magellan_Price_{key}_{str(date.today())}.xlsx")
-                        create_excel_file(location_prices=value,effective_date=effective_date,path = path)
-                        subject = f"BioUrja Trading - Magellan Price for {str(date.today())}"
-                        body = f"BioUrja_Magellan_Price_{key}_{str(date.today())}"
+                        path = os.path.join(settings.MEDIA_ROOT,"files_mail",f"BioUrja_Magellan_Price_{key}_{str(effective_date.replace('/','-'))}.xlsx")
+                        create_excel_file(location_prices=value,effective_date=effective_date,path = path,effective_time=effective_time)
+                        publish_date = str(date.today()) if id == 1 else  str( date.today() + timedelta(days=1))
+                        subject = f"BioUrja Trading - Magellan Price for {publish_date}"
+                        body = f"BioUrja_Magellan_Price_{key}_{publish_date}"
                         if mail_list[key][0] and mail_list[key][1]:
                             customer_mail(subject,body,path,to=mail_list[key][0].split(','),bcc = mail_list[key][1].split(',') )
-                    dtn_load_update(id)    
-                    if id == 1:
-                        location_price_mail(date.today() - timedelta(days=1))
-                    else:
-                        location_price_mail(date.today())
                 except Exception as e:
-                    raise Exception (e)
-                
+                    raise Exception (e) 
             thread = threading.Thread(target=mass_mail)    
             thread.start()
+            update = True
+            
+            
+        if update:
+            dtn_load_update(id)    
+            if id == 0:
+                location_price_mail(date.today())
+            else:
+                location_price_mail(date.today() - timedelta(days=1))
         if id==1:
             return redirect("homeid",1)
         else:
@@ -755,7 +759,7 @@ def load_data_to_dtn(request,id = 0):
     except Exception as e:
         return HttpResponse ("Following error occured during excecution{}".format(e))
    
-        
+       
         
         
         

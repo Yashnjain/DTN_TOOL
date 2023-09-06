@@ -20,6 +20,7 @@ from .views_delete import reset_today_price
 from .views_sheduler import sheduler
 from .view_accounts import download_csv
 from .sap import push_to_sap
+from .sample import test
 
 urlpatterns = [ 
     path("",home,name = "home"),
@@ -33,6 +34,7 @@ urlpatterns = [
     path("send",sheduler),
     path('download-csv/<str:current_date>/', download_csv ),
     path('download-csv', download_csv),
+    path('test',test),
     path('sap',push_to_sap)
 ]
   

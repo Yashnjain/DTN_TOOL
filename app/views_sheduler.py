@@ -12,6 +12,8 @@ from .mail import customer_mail, location_price_mail
 from .models import MyFile
 from .utils import dtn_load_update, strformat,validate_user
 from .views import fetch_dtn_file_data
+from .blob import upload_blob
+
 
 @validate_user
 def sheduler(requests):
@@ -24,6 +26,7 @@ def sheduler(requests):
     
         effective_date = date.today() + timedelta(days=1)
         effective_date = effective_date.strftime("%m/%d/%y")
+        effective_time = '00:01'
         update  = False
         if dtnlist:
             response = HttpResponse(
@@ -89,21 +92,19 @@ def sheduler(requests):
             update = True  
             ############################## FILE TRANSFER #############################
             transfer_files(file_path)  
+            upload_blob(file_path)
         ##################################### FOR NON DTN NON SUBSCRIBER USER ###################################################
         if dtnlist_email:  
             def mass_mail():
                 try:
                     for key,value in dtnlist_email.items():
-                        path = os.path.join(settings.MEDIA_ROOT,"files_mail",f"BioUrja_Magellan_Price_{key}_{str(date.today())}.xlsx")
-                        create_excel_file(location_prices=value,effective_date=effective_date,path = path)
-                        subject = f"BioUrja Trading - Magellan Price for {str(date.today())}"
-                        body = f"BioUrja_Magellan_Price_{key}_{str(date.today())}"
+                        path = os.path.join(settings.MEDIA_ROOT,"files_mail",f"BioUrja_Magellan_Price_{key}_{str(effective_date.replace('/','-'))}.xlsx")
+                        create_excel_file(location_prices=value,effective_date=effective_date,path = path,effective_time=effective_time)
+                        publish_date = str(date.today()) if id == 1 else  str( date.today() + timedelta(days=1))
+                        subject = f"BioUrja Trading - Magellan Price for {publish_date}"
+                        body = f"BioUrja_Magellan_Price_{key}_{publish_date}"
                         if mail_list[key][0] and mail_list[key][1]:
                             customer_mail(subject,body,path,to=mail_list[key][0].split(','),bcc = mail_list[key][1].split(',') )   
-                    if id == 1:
-                        location_price_mail(date.today() - timedelta(days=1))
-                    else:
-                        location_price_mail(date.today())
                 except Exception as e:
                     raise Exception (e)
                     
@@ -111,6 +112,10 @@ def sheduler(requests):
             thread.start()
             update = True
         if update:
+            if id == 0:
+                location_price_mail(date.today())
+            else:
+                location_price_mail(date.today() - timedelta(days=1) )
             dtn_load_update(id) 
             return HttpResponse('SUCCESS')    
         else:

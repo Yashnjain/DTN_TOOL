@@ -1,9 +1,10 @@
 from django.core.mail import send_mail
 from .models import Location_price
 import pandas as pd
-from datetime import date 
+from datetime import date,timedelta
 from django.core.mail import EmailMessage
 from app.models import MetaData
+
 
 
 def mail_send():
@@ -59,7 +60,8 @@ def location_price_mail(date = date.today()):
             raise Exception ("Getting Error while performaing pandas operations {}".format(e))      
         else :
             metadata = MetaData.objects.get(key="INTERNAL_MAIL_LIST") 
-            subject = "MarketData Publisher Service Notification For - {}".format(date)
+            notification_date = date + timedelta(days=1)
+            subject = "MarketData Publisher Service Notification For - {}".format(notification_date)
             from_email = "prism.support@biourja.com"
             recipient_list = metadata.value.get('mail')
             fail_silently = False
