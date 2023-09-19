@@ -2,11 +2,13 @@ from django.db import connection
 import pandas as pd
 import json     
 import requests
-from datetime import date,datetime
+from datetime import datetime,timedelta
 from django.http import HttpResponse
 from app.models import MetaData
 from .utils import validate_user
 from app.models import MetaData
+
+
 
 def format_records(df:pd.DataFrame)->json:
     try:
@@ -47,26 +49,12 @@ def post_data(metadata :json,token : str,json_data :json) ->requests.Response:
 @validate_user
 def push_to_sap(requests):
     try:
-        current_date = str(date.today())
-        sql = f"""select cp.date as U_Date,tm."location" as U_WhsCode,ac.customer_code as U_CustCode,ac.company as U_CustName,
-                    case
-                    when atcm.rack then alp.price
-                    else cp."Final_price"
-                    end as U_Price
-                    from public.app_cust_price as cp
-                    inner join app_terminal_customer_mapping atcm
-                    on cp.cust_term_prod_id = atcm.id
-                    inner join app_terminal tm
-                    on atcm.location_id = tm.id
-                    inner join app_location_price alp
-                    on tm.id = alp.location_id
-                    inner join app_customer ac
-                    on atcm.customer_id = ac.id
-                    where cp.date = '{current_date}' and alp.date = '{current_date}'"""
-                    
+        metadata_sql = MetaData.objects.get(key='sap_query')
+        sql = metadata_sql.value.get('sql')
         metadata = MetaData.objects.get(key='SAP')
         
         df =  pd.read_sql_query(sql,connection)
+        df.u_date =  df.u_date[0] + timedelta(days = 1)
         current_date = datetime.now().strftime("%A")
         json_data = format_records(df)
         token = get_token(metadata)

@@ -258,7 +258,6 @@ def home(request,id = 0):
         ###########################################Post################################################
         
         elif request.method == 'POST':
-            
             if id == 0:
                 prev_day = get_prev_location_date(location_price_all,today)
                 if prev_day == today:
@@ -470,8 +469,10 @@ def home(request,id = 0):
           
             metainfo.objects.create(user = request.user)
             if id==1:
+                location_price_mail(date.today() - timedelta(days=1))
                 return redirect("homeid",1)
             else:
+                location_price_mail(date.today())
                 return redirect("home")
         elif request.method == "PUT":
             pass
@@ -482,7 +483,7 @@ def home(request,id = 0):
         return HttpResponse ("Getting follwing {} error kindly check".format(e))
 
 
-        
+@login_required 
 def download_file(request,id):
     try:
         file_name = MyFile.objects.filter(id =id).values("file").first()["file"]
@@ -500,7 +501,7 @@ def download_file(request,id):
         raise Http404
             
   
-    
+@login_required 
 def filter_files(request):
     selected_date = request.GET.get('date')
     if selected_date:
@@ -510,10 +511,11 @@ def filter_files(request):
     return render(request, 'download.html', {'files': files})
 
 
+
+
 def fetch_dtn_file_data(id,for_date):
     today = date.today()
     try:
-        
         supplier = {} 
         dtn = {}
         supplier_email = {}
