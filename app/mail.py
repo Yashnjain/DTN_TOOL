@@ -12,9 +12,9 @@ def mail_send():
     
  
 
-def location_price_mail(date = date.today()):
+def location_price_mail(date = date.today(), save = False):
     try :
-        l_price  = Location_price.objects.filter(date = date).values("location_id__location","price")
+        l_price  = Location_price.objects.filter(date = date).values("location_id__location","price").order_by('location_id__location')
     except Exception as e :
         raise Exception ("Gettimg Error while fetching data {}".format(e))
     else:
@@ -59,9 +59,13 @@ def location_price_mail(date = date.today()):
         except Exception as e:
             raise Exception ("Getting Error while performaing pandas operations {}".format(e))      
         else :
-            metadata = MetaData.objects.get(key="INTERNAL_MAIL_LIST") 
             notification_date = date + timedelta(days=1)
-            subject = "MarketData Publisher Service Notification For - {}".format(notification_date)
+            if save :
+                subject = "Price Saved For Date {}".format(notification_date)
+                metadata = MetaData.objects.get(key="MAIL_LIST_SAVE") 
+            else :
+                subject = "MarketData Publisher Service Notification For - {}".format(notification_date)
+                metadata = MetaData.objects.get(key="INTERNAL_MAIL_LIST")
             from_email = "prism.support@biourja.com"
             recipient_list = metadata.value.get('mail')
             fail_silently = False

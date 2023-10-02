@@ -32,10 +32,24 @@ function checkover2(id1) {
     if (field.value === "") {
         field.value = "0.0";
     }
-    if (field.value !== "0.0" && field.value !== "0") {
-        field.classList.add("cust-val");
-    } else {
+    // if (field.value !== "0.0" && field.value !== "0") {
+    //     field.classList.add("cust-val");
+    // } else {
+    //     field.classList.remove("cust-val");
+    // }
+    if ((field.value >0.05 || field.value < -0.05 )) {
+        field.classList.add("warn");
         field.classList.remove("cust-val");
+    } else {
+        field.classList.remove("warn");
+        if ((field.value <=0.05 && field.value >=  -0.05 )&&(field.value !== "0.0" && field.value !== "0"))
+        {
+            field.classList.add("cust-val");
+        }
+        if(field.value == "0.0" || field.value == "0" ||field.value == "-0.0" || field.value == "-0" )
+        {
+            field.classList.remove("cust-val");
+        }
     }
 }
 
@@ -164,6 +178,8 @@ function handleArrowKeys(event, element) {
             const frozenRect = status_col.getBoundingClientRect();
             const activeRect = nextInput.getBoundingClientRect();
             boundry_diff= activeRect.x - frozenRect.x;
+            console.log(activeRect)
+            console.log(frozenRect)
         }
         catch (e) {
             //pass
@@ -254,10 +270,6 @@ function isEnable(event) {
     if (confirmation) {
         var input = document.getElementById(cstinput);
         var drp_inp = document.getElementById(drp);
-    
-        // Do something with the loc and cust values
-        // console.log("Location:", loc);
-        // console.log("Customer:", cust);
         if (checkbox.checked) {
             try {
 
@@ -289,7 +301,6 @@ custfield.forEach(element => {
     if (element.value !== "0.0" && element.value !== "0") {
         const id_temp = element.id; // get the id attribute of the current element
         checkover2(id_temp);
-        // console.log(id_temp);
     }
 });
 

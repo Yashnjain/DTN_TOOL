@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 
 
+
 from pathlib import Path
 import os
 
@@ -119,14 +120,15 @@ WSGI_APPLICATION = 'price_tracker.wsgi.application'
 
 
 # Prod Database
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dtnprice-database_dev',
+        'NAME': 'dtnprice-database',
         'HOST': 'bio-dtn.postgres.database.azure.com',
         'USER': 'biodtnadmin01',
         'PASSWORD': 'wVRZP7mfd78*gRChPDgVbQf@cavP',
-        'CONN_MAX_AGE': 300
+        'CONN_MAX_AGE': 600
     }
 }
 
@@ -230,17 +232,22 @@ EMAIL_HOST_PASSWORD = "Chirag0987"
 
 ACCOUNT_EMAIL_VERIFICATION = "none"
 
+DATA_UPLOAD_MAX_MEMORY_SIZE = 100000000
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 100000000
+
+
+
+
 
 
 #dev
 SECURE_PROXY_SSL_HEADER = None
 SECURE_SSL_REDIRECT = False
-
-
-DATA_UPLOAD_MAX_MEMORY_SIZE = 100000000
-DATA_UPLOAD_MAX_NUMBER_FIELDS = 100000000
-
-
+STATICFILES_DIRS = [
+    BASE_DIR,"static"
+]
+STATIC_URL = 'static/'
+DEBUG = True
 
 
 
@@ -250,19 +257,6 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = 100000000
 # SECURE_SSL_REDIRECT = True
 # SECURE_PROXY_SSL_HEADER =('HTTP_X_FORWARDED_PROTO','https')
 # SOCIALACCOUNT_AUTO_SIGNUP = False
-
-
-
-#dev
-STATICFILES_DIRS = [
-    BASE_DIR,"static"
-]
-STATIC_URL = 'static/'
-DEBUG = True
-
-
-
-# prod
 # DEBUG = False
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # STATIC_URL = '/static/'

@@ -62,8 +62,10 @@ class Location_price(models.Model):
     price_dffernce = models.FloatField(default= 0)
     status = models.IntegerField(default=0)
 
+
     def __str__(self) -> str:
         return "{}-{}-{}".format(self.location,self.date,self.price)
+    
 
     @staticmethod
     def get_location_price():

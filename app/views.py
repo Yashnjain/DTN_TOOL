@@ -83,19 +83,12 @@ def home(request,id = 0):
         
   
         print(time.time(),"a")
-        last_week = date.today() - timedelta(days = 210)
+        last_week = date.today() - timedelta(days = 10)
      
                 
         location_price_all  = list(Location_price.objects.select_related("location").filter(date__gt = last_week).values("id","location_id","date","price","price_dffernce","location__location"))
         cust_price_all = list(Cust_price.objects.filter(date__gt = last_week).values())
         tcpmapping_all  = list(Terminal_customer_mapping.objects.select_related('customer').values("id","Product_id","customer_id","location_id","status","customer__customer"))
-        
-        
-        
-    
-        
-         
-            
         
         #sorting datewise
         location_price_all = sorted(location_price_all, key=lambda x: x['date'],reverse =True) 
@@ -443,36 +436,30 @@ def home(request,id = 0):
             def list_location_update_func():      
                 if list_location_update:
                     Location_price.objects.bulk_update(list_location_update,['price_dffernce','price','status'])   
-            def list_location_insert_func():            
-                if list_location_insert:
-                    Location_price.objects.bulk_create(list_location_insert)
+            def list_location_insert_func():
+                try:            
+                    if list_location_insert:
+                        Location_price.objects.bulk_create(list_location_insert)
+                except Exception as e :
+                    print(e)        
             def list_cust_insert_func():   
                 if list_cust_insert:
                     Cust_price.objects.bulk_create(list_cust_insert)
 
             with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
                 executor.map(lambda f: f(), [list_tcm_update_func,list_cust_update_func,list_location_update_func,list_location_insert_func,list_cust_insert_func])
-            # if list_location_insert:
-            #     bulk_insert_models(list_location_insert,list_cust_insert)
-            # # if list_cust_insert:  
-            # #     bulk_insert_models(list_cust_insert)
-            # if list_tcm_update:    
-            #     bulk_update_models(models = list_tcm_update,update_field_names = ["status"],pk_field_names = ["id"] )
-            # if list_cust_update:
-            #     bulk_update_models(models = list_cust_update,update_field_names = ['price_variance','status','Final_price'],pk_field_names = ["id"],)
-            # if list_location_update:
-            #     bulk_update_models(models = list_location_update,update_field_names = ['price_dffernce','price','status'],pk_field_names = ["id"])
-            
+
+
             end_time = time.time()           
             total_time = end_time - start_time
             print(f"Total time taken: {total_time} seconds")   
           
             metainfo.objects.create(user = request.user)
             if id==1:
-                location_price_mail(date.today() - timedelta(days=1))
+                location_price_mail(date.today() - timedelta(days=1),save  = True)
                 return redirect("homeid",1)
             else:
-                location_price_mail(date.today())
+                location_price_mail(date.today(), save = True)
                 return redirect("home")
         elif request.method == "PUT":
             pass
@@ -520,7 +507,7 @@ def fetch_dtn_file_data(id,for_date):
         dtn = {}
         supplier_email = {}
         dtn_mail = {}
-        last_week = date.today() - timedelta(days = 200)
+        last_week = date.today() - timedelta(days = 10)
         cps_all = Cust_price.objects.filter(date__gt = last_week).values()
         location_price_all  = Location_price.objects.select_related("location").filter(date__gt = last_week).values("id","location_id","date","price","price_dffernce","location__location","location_id__state")
         tcpmapping_all  = Terminal_customer_mapping.objects.select_related('customer').values("id","location_id","status","customer__customer","customer__dtn","customer_id",'customer__send_format','customer__mail_list_to','customer__mail_list_bcc')
@@ -640,7 +627,7 @@ def fetch_dtn_file_data(id,for_date):
 
 
 
-   
+  
 @login_required(login_url="/accounts/microsoft/login")
 @authorisation
 def load_data_to_dtn(request,id = 0):
@@ -757,7 +744,6 @@ def load_data_to_dtn(request,id = 0):
             return redirect("homeid",1)
         else:
             return redirect("home")
-
     except Exception as e:
         return HttpResponse ("Following error occured during excecution{}".format(e))
    
