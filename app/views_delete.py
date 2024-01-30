@@ -7,6 +7,8 @@ from app.utils import authorisation
 
 
 
+
+
 @login_required(login_url="/accounts/microsoft/login")
 @authorisation
 def reset_today_price(request):

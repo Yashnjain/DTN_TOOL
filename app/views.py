@@ -23,6 +23,9 @@ from .blob import upload_blob,download_blob
 
 
 
+
+
+
 @login_required(login_url="/accounts/microsoft/login")
 @authorisation
 def home(request,id = 0):
@@ -37,9 +40,7 @@ def home(request,id = 0):
             today,yesterday = dates
         else:
             return HttpResponseNotFound
-        
         # To Track the active page and lastdtn load
-      
         if id == 1:
             color = False
             try:
@@ -120,7 +121,7 @@ def home(request,id = 0):
             #Yesterday button active deactive
             yesterday_active = True
             day_gap = (today - yesterday).days
-            if day_gap > 1:
+            if day_gap > 3:
                 yesterday_active = False
             
                  
@@ -456,7 +457,7 @@ def home(request,id = 0):
           
             metainfo.objects.create(user = request.user)
             if id==1:
-                location_price_mail(date.today() - timedelta(days=1),save  = True)
+                location_price_mail(today,save  = True)
                 return redirect("homeid",1)
             else:
                 location_price_mail(date.today(), save = True)
@@ -637,7 +638,7 @@ def load_data_to_dtn(request,id = 0):
         for_date = date.today() 
     elif id == 1 :
         #print("yesterday")
-        for_date = date.today() - timedelta(days=1)
+        for_date,yesteday = setdate(id)
     else:
         return HttpResponseNotFound    
     try:  
@@ -720,9 +721,10 @@ def load_data_to_dtn(request,id = 0):
             def mass_mail():
                 try:
                     for key,value in dtnlist_email.items():
-                        path = os.path.join(settings.MEDIA_ROOT,"files_mail",f"BioUrja_Magellan_Price_{key}_{str(effective_date.replace('/','-'))}.xlsx")
+                        file_date = for_date + timedelta(days=1)
+                        path = os.path.join(settings.MEDIA_ROOT,"files_mail",f"BioUrja_Magellan_Price_{key}_{str(file_date)}.xlsx")
                         create_excel_file(location_prices=value,effective_date=effective_date,path = path,effective_time=effective_time)
-                        publish_date = str(date.today()) if id == 1 else  str( date.today() + timedelta(days=1))
+                        publish_date = str(for_date + timedelta(days=1))
                         subject = f"BioUrja Trading - Magellan Price for {publish_date}"
                         body = f"BioUrja_Magellan_Price_{key}_{publish_date}"
                         if mail_list[key][0] and mail_list[key][1]:
@@ -739,7 +741,7 @@ def load_data_to_dtn(request,id = 0):
             if id == 0:
                 location_price_mail(date.today())
             else:
-                location_price_mail(date.today() - timedelta(days=1))
+                location_price_mail(for_date)
         if id==1:
             return redirect("homeid",1)
         else:

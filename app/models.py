@@ -17,6 +17,8 @@ class Terminal(models.Model):
 
     def __str__(self) -> str:
         return self.location
+    
+    
     @staticmethod
     def get_location():
         return Terminal.objects.all()

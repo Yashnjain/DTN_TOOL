@@ -4,6 +4,10 @@ from app.models import dtn_load
 from functools import wraps
 from django.http import HttpResponseForbidden
 from django.contrib.auth import authenticate
+import pandas as pd
+from django.db import connection
+
+
 
 def authorisation(func):
     def wrapper(request, *args, **kwargs):
@@ -42,7 +46,13 @@ def setdate(id:int):
         if id == 0:
             return (date.today(),date.today() - timedelta(days=1))
         elif id == 1:
-            return (date.today() - timedelta(days=1),date.today() - timedelta(days=2))
+            max_date_sql = """ select distinct(date) from public.app_location_price order by date desc limit 10 """
+            df =  pd.read_sql_query(max_date_sql,connection)
+            today_index,yesterday_index  = 0,1
+            if date.today() == df['date'][0]:
+                today_index,yesterday_index  = 1,2
+            return (df['date'][today_index],df['date'][yesterday_index])
+            # return (date.today() - timedelta(days=1),date.today() - timedelta(days=2))
         else :
             return False
     except Exception as e:
